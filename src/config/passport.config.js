@@ -4,8 +4,6 @@ import { generateHash, validateHash } from "../utils.js";
 import passportJWT from 'passport-jwt'
 import config from "./config.js";
 import userService from "../services/users.service.js";
-import cartService from "../services/cart.service.js";
-import favoritesService from "../services/favorites.service.js";
 import CustomError from "../services/errors/CustomError.js";
 import { errorTypes } from "../services/errors/enums.js";
 
@@ -51,9 +49,6 @@ export const initPassport = async ()=>{
                 const userExists = await userService.getUserByEmail(email)
 
                 if(userExists) return done(null, false, {message:`Usuario: ${username}, previamente registrado`})
-                
-                let createdCart = await cartService.createCart()
-                let createdFavorites = await favoritesService.createFavorites()
 
                 const createdUser = await userService.createUser({
                     name: name,

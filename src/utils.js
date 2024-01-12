@@ -13,7 +13,7 @@ export const __dirname = dirname(__filename);
 export const generateHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 export const validateHash = (password, user) => bcrypt.compareSync(password, user.password);
 
-export const generateJWT=(user)=>jwt.sign({user}, config.PRIVATE_KEY, {expiresIn: '1h'})
+export const generateJWT=(user)=>jwt.sign({user}, config.PRIVATE_KEY, {expiresIn: '24h'})
 
 export const validateJWT=(req, res, next)=>{
     if(!req.cookies.tokenCookie){

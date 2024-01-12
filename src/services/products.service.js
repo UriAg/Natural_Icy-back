@@ -5,8 +5,8 @@ class ProductsService{
         this.dao=new dao()
     }
 
-    async getProducts(){
-        return await this.dao.get()
+    async getProducts(filter={}){
+        return await this.dao.get(filter)
     }
 
     async getProductById(id){

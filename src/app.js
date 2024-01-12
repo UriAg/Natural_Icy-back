@@ -13,10 +13,7 @@ import handleErrors from './middlewares/errors/handleErrors.js';
 import CustomSessionsRouter from './dao/MongoDb/routes/customSessions.router.js';
 import CustomCartRouter from './dao/MongoDb/routes/customCart.router.js';
 import CustomProductsRouter from './dao/MongoDb/routes/customProducts.router.js';
-import CustomFavoritesRouter from './dao/MongoDb/routes/customFavorites.router.js';
-import { missingToken } from './services/errors/productErrors.js';
-import CustomError from './services/errors/CustomError.js';
-import { errorTypes } from './services/errors/enums.js';
+import CustomCheckoutRouter from './dao/MongoDb/routes/customCheckout.router.js';
 
 const app = express();
 
@@ -29,10 +26,10 @@ app.use(session({
   saveUninitialized:true,
   store: ConnectMongo.create({
     mongoUrl:`${config.MONGO_URL}&dbName=${config.DB_NAME}`,
-    ttl: 3600
+    ttl: 86400
   }),
   cookie:{
-    maxAge:1000*3600
+    maxAge:86400000
   }
 }))
 initPassport()
@@ -44,26 +41,15 @@ app.use(cors())
 const customSessions = new CustomSessionsRouter()
 const customCart = new CustomCartRouter()
 const customProducts = new CustomProductsRouter()
-const customFavorites = new CustomFavoritesRouter()
-
-const auth = (req, res, next)=>{
-  if(req.cookies.tokenCookie){
-    next()
-  }else{
-    next(CustomError.createError({
-      name:'Product creation error',
-      cause: missingToken(),
-      code: errorTypes.AUTHORIZATION_ERROR 
-    }))
-  }
-}
+const customCheckout = new CustomCheckoutRouter()
 
 app.use('/api/products', customProducts.getRouter());
 app.use('/api/carts', customCart.getRouter());
-app.use('/api/favorites', customFavorites.getRouter());
 app.use('/api/sessions', customSessions.getRouter());
-app.use('*', (req, res)=>{return res.status(404).send('Bad request, 404 not found');});
+app.use('/api/checkout', customCheckout.getRouter());
+app.use('*', (req, res)=>{return res.status(404).json({payload:'Bad request, 404 url not found'});});
 app.use(handleErrors)
+
 
 app.listen(config.PORT,()=>{
     console.log(`Server escuchando en puerto ${config.PORT}`);

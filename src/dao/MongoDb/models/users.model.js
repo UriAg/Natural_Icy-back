@@ -12,14 +12,6 @@ const usersModel = mongoose.model('users', new mongoose.Schema({
         default:'USER'
     },
     password:String,
-    cart:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'carts'
-    },
-    favorites:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'favorites'
-    },
 }, {
     timestamps:true
 }))
