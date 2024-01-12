@@ -9,7 +9,7 @@ import CustomError from '../services/errors/CustomError.js';
 import { MercadoPagoConfig, Preference } from 'mercadopago'
 const client = new MercadoPagoConfig({ accessToken: config.ACCESS_TOKEN, options: { timeout: 5000 } });
 const preference = new Preference(client);
-// const server = new MercadoPagoConfig({ accessToken: config.SECRET_KEY, options: { timeout: 5000 } });
+const server = new MercadoPagoConfig({ accessToken: config.SECRET_KEY, options: { timeout: 5000 } });
 
 async function createPreference(req, res, next){
     try {
