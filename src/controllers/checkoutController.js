@@ -69,7 +69,7 @@ async function createPreference(req, res, next){
             }
             
         }
-
+        
         let preferenceQuery = {
             items: productsWithStock,
             payer: {
@@ -79,8 +79,8 @@ async function createPreference(req, res, next){
             },
             binary_mode: true,
             back_urls: {
-                success: "http://127.0.0.1:5500/src/public/index-prueba/index.html",
-                failure: "http://127.0.0.1:5500/src/public/index-prueba/index.html",
+                success: "http://127.0.0.1:5500/src/public/index-prueba-local/index.html",
+                failure: "http://127.0.0.1:5500/src/public/index-prueba-local/index.html",
             },
             auto_return: 'approved',
             payment_methods: {
@@ -110,7 +110,6 @@ async function createPreference(req, res, next){
                 cost: 1,
                 mode: "not_specified",
             };
-            
             await ticketService.createTicket({
                 products: preferenceQuery.items,
                 total_amount,
@@ -146,9 +145,11 @@ async function createPreference(req, res, next){
 
 async function getNotification(req, res, next){
 try {
+    console.log('a')
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
-
+    console.log('b')
+    
     const signature = req.headers['x-signature-id'];
     if (!server.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
         CustomError.createError({
@@ -157,11 +158,14 @@ try {
             code: errorTypes.AUTHENTICATION_ERROR,
         });
     }
-
+    console.log('c')
+    
     if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
+        console.log('if a')
         
         const ticketResponse = await ticketService.getTicket({code: paymentData.external_reference});
-
+        
+        console.log('if b')
         await transporter.transporter.sendMail({
             from: config.SERVER_MAIL,
             to: config.MAIL_ADMIN,
@@ -233,14 +237,18 @@ try {
         
             `
         }).catch(err=>console.log(err));
+        console.log('if c')
         
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
+    console.log('c')
 
     if (paymentData && paymentData.action === 'state_CANCELED') {
+        console.log('se eliminó')
         await ticketService.deleteTicket({code: paymentData.data.external_reference});
         return res.status(200).json({payload: 'Se canceló la compra del ticket'})
     }
+    return res.status(200).json({payload: 'hubo un error'})
 }catch(error){
     next(error)
 }
