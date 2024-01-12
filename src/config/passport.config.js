@@ -45,19 +45,17 @@ export const initPassport = async ()=>{
             try{
                 let {name, last_name, role, email } = req.body;
                 if(!name || !last_name || !role || !email || !password) return done(null, false);
-            
+                
                 const userExists = await userService.getUserByEmail(email)
-
+                
                 if(userExists) return done(null, false, {message:`Usuario: ${username}, previamente registrado`})
-
-                const createdUser = await userService.createUser({
-                    name: name,
+            
+            const createdUser = await userService.createUser({
+                name: name,
                     last_name: last_name,
                     email: email,
                     role: role,
                     password: generateHash(password),
-                    cart: createdCart._id,
-                    favorites: createdFavorites._id,
                 })
     
                 return done(null, createdUser);
