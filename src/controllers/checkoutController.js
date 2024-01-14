@@ -157,7 +157,7 @@ try {
     //     });
     // }
     console.log('c')
-    
+    console.log(paymentData)
     if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
         console.log('if a')
         
