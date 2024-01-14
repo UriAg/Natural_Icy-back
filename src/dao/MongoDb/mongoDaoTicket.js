@@ -3,7 +3,7 @@ import ticketModel from './models/ticket.model.js';
 class MongoDaoTicket{
     constructor(){}
 
-    async getOne(filter={}){
+    async getOne(filter){
         return await ticketModel.findOne(filter).lean();
     }
 

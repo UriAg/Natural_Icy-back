@@ -169,7 +169,7 @@ try {
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
         console.log('if a')
         
-        const ticketResponse = await ticketService.getTicket({code: paymentData.external_reference});
+        const ticketResponse = await ticketService.getTicket({code: orderState.data.esternal_reference.toString()});
         
         console.log('if b')
         console.log('########################################################')
