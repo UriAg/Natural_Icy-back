@@ -239,7 +239,7 @@ try {
         
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
-    console.log('c')
+    console.log('d')
 
     if (paymentData && paymentData.action === 'state_CANCELED') {
         console.log('se eliminó')
