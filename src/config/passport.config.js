@@ -55,6 +55,7 @@ export const initPassport = async ()=>{
                     last_name: last_name,
                     email: email,
                     role: role,
+                    purchases:[],
                     password: generateHash(password),
                 })
     

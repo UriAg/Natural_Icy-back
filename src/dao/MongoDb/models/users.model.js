@@ -11,6 +11,11 @@ const usersModel = mongoose.model('users', new mongoose.Schema({
         type:String,
         default:'USER'
     },
+    purchases:[
+        {
+            payment_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'tickets' }
+        },
+    ],
     password:String,
 }, {
     timestamps:true

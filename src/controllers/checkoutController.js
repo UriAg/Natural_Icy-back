@@ -8,6 +8,7 @@ import { isValidObjectId } from 'mongoose';
 import CustomError from '../services/errors/CustomError.js';
 import { MercadoPagoConfig, Preference } from 'mercadopago'
 import axios from 'axios'
+import userService from '../services/users.service.js';
 const client = new MercadoPagoConfig({ accessToken: config.ACCESS_TOKEN, options: { timeout: 5000 } });
 const preference = new Preference(client);
 
@@ -51,8 +52,6 @@ async function createPreference(req, res, next){
                 });
             }
 
-            total_amount+=parseFloat(productStock.price);
-
             let productToPurchase = {
                 id: productStock._id.toString(),
                 title: productStock.title,
@@ -70,6 +69,10 @@ async function createPreference(req, res, next){
             
         }
         
+        productsWithStock.map(product=>{
+            total_amount+=(parseFloat(product.unit_price)*parseInt(product.quantity))
+        })
+
         let preferenceQuery = {
             items: productsWithStock,
             payer: {
@@ -104,10 +107,10 @@ async function createPreference(req, res, next){
                 aditional_info: address.aditional_info,
                 zip_code: parseInt(address.zip_code, 10)
             };
-            preferenceQuery['shipments'] = {
-                cost: 1,
-                mode: "not_specified",
-            };
+            // preferenceQuery['shipments'] = {
+            //     cost: 1,
+            //     mode: "not_specified",
+            // };
             await ticketService.createTicket({
                 products: preferenceQuery.items,
                 total_amount,
@@ -125,6 +128,9 @@ async function createPreference(req, res, next){
             }) 
 
         }
+        await userService.updateUser(
+            {email: req.user.email},
+            { $push: { purchases: random_code.toString() } })
 
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
@@ -133,7 +139,13 @@ async function createPreference(req, res, next){
                 id: response.id
             });
         }).catch(async function (error) {
+            console.log('se eliminó')
             await ticketService.deleteTicket({code: random_code.toString()});
+            console.log('se eliminó 2')
+            await userService.updateUser(
+                { email: req.user.email },
+                { $pull: { purchases: random_code.toString() } })
+                console.log('se eliminó 3')
         });
       
     }catch(error) {
@@ -143,7 +155,6 @@ async function createPreference(req, res, next){
 
 async function getNotification(req, res, next){
 try {
-    console.log('a')
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
     const orderState = await axios.get(`https://api.mercadopago.com/v1/payments/${paymentData.data.id}`, {
@@ -153,7 +164,6 @@ try {
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
-    console.log('b')
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
     //     CustomError.createError({
@@ -162,18 +172,11 @@ try {
     //         code: errorTypes.AUTHENTICATION_ERROR,
     //     });
     // }
-    console.log('c')
-    console.log(paymentData)
-    console.log('########################################################')
-    console.log(orderState.data)
+
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
-        console.log('if a')
         
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
         
-        console.log('if b')
-        console.log('########################################################')
-        console.log(ticketResponse)
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de compra',
@@ -182,6 +185,7 @@ try {
 
                 <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
+                    <span style="color: #333; text-align: center;">Código de opercación: ${paymentData.data.id}</span>
             
                     <div>
                         <h2 style="color: #555;">Comprador</h2>
@@ -191,22 +195,22 @@ try {
                             
                             ${ticketResponse.shipment ? `
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
-                                <li style="margin-bottom: 10px;"><b>Numero de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
+                                <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
                                 
                                 ${ticketResponse.payer.address.apartment && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de departamento: </b>${ticketResponse.payer.address.apartment}</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `}
                                 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
                                 `}
                                 
                             ` : `
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
                                 `}
                             `}
                         </ul>
@@ -228,27 +232,24 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info && `
+                    ${ticketResponse.address && ticketResponse.payer.address.aditional_info && `
                         <div style="margin-top: 20px;">
-                            <h2>Información adicional de envío</h2>
+                            <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
                         </div>
                     `}
             
                     <div style="text-align:center; margin-top: 20px;">
-                        <p><b>Precio final: </b>$${ticketResponse.total_amount}</p>
+                        <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
                     </div>
                 </div>
         
             </body>
         
             `
-        }).catch(err=>console.log(err));
-        console.log('if c')
-        
+        }).catch(err=>console.log(err));        
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
-    console.log('d')
 
     if (orderState && orderState.data.status === 'rejected') {
         console.log('se eliminó')
