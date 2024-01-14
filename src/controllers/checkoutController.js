@@ -143,113 +143,109 @@ async function createPreference(req, res, next){
 
 async function getNotification(req, res, next){
 try {
-    // console.log('a')
+    console.log('a')
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
-    // console.log('b')
-    console.log(req.body)
-    console.log('#######################################################')
-    console.log(paymentData)
-    console.log('#######################################################')
-    console.log(paymentData.action)
-    // const signature = req.headers['x-signature'];
-    // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
-    //     CustomError.createError({
-    //         name: "Error creando el ticket",
-    //         cause: `Firma de webhook no válida`,
-    //         code: errorTypes.AUTHENTICATION_ERROR,
-    //     });
-    // }
-    // console.log('c')
+    console.log('b')
     
-    // if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
-    //     console.log('if a')
+    const signature = req.headers['x-signature'];
+    if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
+        CustomError.createError({
+            name: "Error creando el ticket",
+            cause: `Firma de webhook no válida`,
+            code: errorTypes.AUTHENTICATION_ERROR,
+        });
+    }
+    console.log('c')
+    
+    if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
+        console.log('if a')
         
-    //     const ticketResponse = await ticketService.getTicket({code: paymentData.external_reference});
+        const ticketResponse = await ticketService.getTicket({code: paymentData.external_reference});
         
-    //     console.log('if b')
-    //     await transporter.transporter.sendMail({
-    //         from: config.SERVER_MAIL,
-    //         to: config.MAIL_ADMIN,
-    //         subject: 'Orden de compra',
-    //         html:`
-    //         <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
+        console.log('if b')
+        await transporter.transporter.sendMail({
+            from: config.SERVER_MAIL,
+            to: config.MAIL_ADMIN,
+            subject: 'Orden de compra',
+            html:`
+            <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
 
-    //             <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-    //                 <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
+                <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                    <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
             
-    //                 <div>
-    //                     <h2 style="color: #555;">Comprador</h2>
-    //                     <ul style="list-style: none; padding: 0;">
-    //                         <li style="margin-bottom: 10px;"><b>Nombre: </b>${ticketResponse.payer.name} ${ticketResponse.payer.last_name}</li>
-    //                         <li style="margin-bottom: 10px;"><b>Email: </b>${ticketResponse.payer.email}</li>
+                    <div>
+                        <h2 style="color: #555;">Comprador</h2>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 10px;"><b>Nombre: </b>${ticketResponse.payer.name} ${ticketResponse.payer.last_name}</li>
+                            <li style="margin-bottom: 10px;"><b>Email: </b>${ticketResponse.payer.email}</li>
                             
-    //                         ${ticketResponse.shipment ? `
-    //                             <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
-    //                             <li style="margin-bottom: 10px;"><b>Numero de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
-    //                             <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
+                            ${ticketResponse.shipment ? `
+                                <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
+                                <li style="margin-bottom: 10px;"><b>Numero de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
+                                <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
                                 
-    //                             ${ticketResponse.payer.address.apartment && `
-    //                                 <li style="margin-bottom: 10px;"><b>Numero de departamento: </b>${ticketResponse.payer.address.apartment}</li>
-    //                             `}
+                                ${ticketResponse.payer.address.apartment && `
+                                    <li style="margin-bottom: 10px;"><b>Numero de departamento: </b>${ticketResponse.payer.address.apartment}</li>
+                                `}
                                 
-    //                             ${ticketResponse.payer.phone && `
-    //                                 <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
-    //                             `}
+                                ${ticketResponse.payer.phone && `
+                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                `}
                                 
-    //                         ` : `
-    //                             <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
+                            ` : `
+                                <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
 
-    //                             ${ticketResponse.payer.phone && `
-    //                                 <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
-    //                             `}
-    //                         `}
-    //                     </ul>
-    //                 </div>
+                                ${ticketResponse.payer.phone && `
+                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                `}
+                            `}
+                        </ul>
+                    </div>
             
-    //                 <div>
-    //                     <h2 style="color: #555;">Productos</h2>
-    //                     ${ticketResponse.products.map(product => `
-    //                         <div style="background-color: #ebebeb; margin: 10px 0; padding: 10px; text-align: center;">
-    //                             <ul style="list-style: none; padding: 0;">
-    //                                 <li style="margin-bottom: 10px;"><b>Nombre: </b>${product.title}</li>
-    //                                 <li style="margin-bottom: 10px;"><b>ID: </b>${product.id}</li>
-    //                                 <li style="margin-bottom: 10px;"><b>Categoría: </b>${product.category_id}</li>
-    //                                 <li style="margin-bottom: 10px;"><b>Cantidad: </b>${product.quantity} unidades</li>
-    //                                 <li style="margin-bottom: 10px;"><b>Precio: </b>$${product.unit_price}</li>
-    //                                 <li style="margin-bottom: 10px;"><b>Subtotal: </b>$${product.unit_price * product.quantity}</li>
-    //                             </ul>
-    //                         </div>
-    //                     `).join('')}
-    //                 </div>
+                    <div>
+                        <h2 style="color: #555;">Productos</h2>
+                        ${ticketResponse.products.map(product => `
+                            <div style="background-color: #ebebeb; margin: 10px 0; padding: 10px; text-align: center;">
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 10px;"><b>Nombre: </b>${product.title}</li>
+                                    <li style="margin-bottom: 10px;"><b>ID: </b>${product.id}</li>
+                                    <li style="margin-bottom: 10px;"><b>Categoría: </b>${product.category_id}</li>
+                                    <li style="margin-bottom: 10px;"><b>Cantidad: </b>${product.quantity} unidades</li>
+                                    <li style="margin-bottom: 10px;"><b>Precio: </b>$${product.unit_price}</li>
+                                    <li style="margin-bottom: 10px;"><b>Subtotal: </b>$${product.unit_price * product.quantity}</li>
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
             
-    //                 ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info && `
-    //                     <div style="margin-top: 20px;">
-    //                         <h2>Información adicional de envío</h2>
-    //                         <p>${ticketResponse.payer.address.aditional_info}</p>
-    //                     </div>
-    //                 `}
+                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info && `
+                        <div style="margin-top: 20px;">
+                            <h2>Información adicional de envío</h2>
+                            <p>${ticketResponse.payer.address.aditional_info}</p>
+                        </div>
+                    `}
             
-    //                 <div style="text-align:center; margin-top: 20px;">
-    //                     <p><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-    //                 </div>
-    //             </div>
+                    <div style="text-align:center; margin-top: 20px;">
+                        <p><b>Precio final: </b>$${ticketResponse.total_amount}</p>
+                    </div>
+                </div>
         
-    //         </body>
+            </body>
         
-    //         `
-    //     }).catch(err=>console.log(err));
-    //     console.log('if c')
+            `
+        }).catch(err=>console.log(err));
+        console.log('if c')
         
-    //     return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
-    // }
-    // console.log('c')
+        return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
+    }
+    console.log('c')
 
-    // if (paymentData && paymentData.action === 'state_CANCELED') {
-    //     console.log('se eliminó')
-    //     await ticketService.deleteTicket({code: paymentData.data.external_reference});
-    //     return res.status(200).json({payload: 'Se canceló la compra del ticket'})
-    // }
+    if (paymentData && paymentData.action === 'state_CANCELED') {
+        console.log('se eliminó')
+        await ticketService.deleteTicket({code: paymentData.data.external_reference});
+        return res.status(200).json({payload: 'Se canceló la compra del ticket'})
+    }
     return res.status(200).json({payload: 'hubo un error'})
 }catch(error){
     next(error)
