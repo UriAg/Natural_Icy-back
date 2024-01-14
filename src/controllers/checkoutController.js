@@ -152,14 +152,14 @@ try {
     const paymentData = req.body;
     console.log('b')
     
-    const signature = req.headers['x-signature'];
-    if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
-        CustomError.createError({
-            name: "Error creando el ticket",
-            cause: `Firma de webhook no válida`,
-            code: errorTypes.AUTHENTICATION_ERROR,
-        });
-    }
+    // const signature = req.headers['x-signature'];
+    // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
+    //     CustomError.createError({
+    //         name: "Error creando el ticket",
+    //         cause: `Firma de webhook no válida`,
+    //         code: errorTypes.AUTHENTICATION_ERROR,
+    //     });
+    // }
     console.log('c')
     
     if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
