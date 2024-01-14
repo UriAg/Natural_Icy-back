@@ -92,7 +92,6 @@ async function createPreference(req, res, next){
                 excluded_payment_types: [],
                 installments: 1
             },
-            notification_url: 'https://naturalicy-back-production.up.railway.app/api/checkout/notify',
             statement_descriptor: 'Natural Icy Market',
             external_reference: random_code.toString()
         };
