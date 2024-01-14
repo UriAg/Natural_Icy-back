@@ -147,11 +147,13 @@ try {
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
     const orderState = await axios.get(`https://api.mercadopago.com/merchant_orders/${paymentData.data.id}`, {
+        method: 'POST',
         headers:{
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
+    console.log(orderState)
     console.log('b')
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
