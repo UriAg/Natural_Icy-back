@@ -146,14 +146,13 @@ try {
     console.log('a')
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
-    const orderState = await axios.get(`https://api.mercadopago.com/merchant_orders/${paymentData.data.id}`, {
-        method: 'POST',
+    const orderState = await axios.get(`https://api.mercadopago.com/v1/payments/${paymentData.data.id}`, {
+        method: 'GET',
         headers:{
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
-    console.log(orderState)
     console.log('b')
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
@@ -166,7 +165,7 @@ try {
     console.log('c')
     console.log(paymentData)
     console.log('########################################################')
-    console.log(orderState)
+    console.log(orderState.data.status)
     // if (paymentData && paymentData.action === 'payment.updated' && paymentData.data && paymentData.data.status === 'approved') {
     //     console.log('if a')
         
@@ -250,7 +249,7 @@ try {
     // }
     // console.log('d')
 
-    // if (paymentData && paymentData.action === 'state_CANCELED') {
+    // if (paymentData && paymentData.action === 'rejected') {
     //     console.log('se eliminó')
     //     await ticketService.deleteTicket({code: paymentData.data.external_reference});
     //     return res.status(200).json({payload: 'Se canceló la compra del ticket'})
