@@ -176,69 +176,7 @@ try {
             to: config.MAIL_ADMIN,
             subject: 'Orden de compra',
             html:`
-            <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
-
-                <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                    <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
-            
-                    <div>
-                        <h2 style="color: #555;">Comprador</h2>
-                        <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 10px;"><b>Nombre: </b>${ticketResponse.payer.name} ${ticketResponse.payer.last_name}</li>
-                            <li style="margin-bottom: 10px;"><b>Email: </b>${ticketResponse.payer.email}</li>
-                            
-                            ${ticketResponse.shipment ? `
-                                <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
-                                <li style="margin-bottom: 10px;"><b>Numero de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
-                                <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
-                                
-                                ${ticketResponse.payer.address.apartment && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de departamento: </b>${ticketResponse.payer.address.apartment}</li>
-                                `}
-                                
-                                ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
-                                `}
-                                
-                            ` : `
-                                <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
-
-                                ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Numero de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
-                                `}
-                            `}
-                        </ul>
-                    </div>
-            
-                    <div>
-                        <h2 style="color: #555;">Productos</h2>
-                        ${ticketResponse.products.map(product => `
-                            <div style="background-color: #ebebeb; margin: 10px 0; padding: 10px; text-align: center;">
-                                <ul style="list-style: none; padding: 0;">
-                                    <li style="margin-bottom: 10px;"><b>Nombre: </b>${product.title}</li>
-                                    <li style="margin-bottom: 10px;"><b>ID: </b>${product.id}</li>
-                                    <li style="margin-bottom: 10px;"><b>Categoría: </b>${product.category_id}</li>
-                                    <li style="margin-bottom: 10px;"><b>Cantidad: </b>${product.quantity} unidades</li>
-                                    <li style="margin-bottom: 10px;"><b>Precio: </b>$${product.unit_price}</li>
-                                    <li style="margin-bottom: 10px;"><b>Subtotal: </b>$${product.unit_price * product.quantity}</li>
-                                </ul>
-                            </div>
-                        `).join('')}
-                    </div>
-            
-                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info && `
-                        <div style="margin-top: 20px;">
-                            <h2>Información adicional de envío</h2>
-                            <p>${ticketResponse.payer.address.aditional_info}</p>
-                        </div>
-                    `}
-            
-                    <div style="text-align:center; margin-top: 20px;">
-                        <p><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                    </div>
-                </div>
-        
-            </body>
+            <div>Holaaaaaa</div>
         
             `
         }).catch(err=>console.log(err));
