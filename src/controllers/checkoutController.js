@@ -251,7 +251,7 @@ try {
     //     await ticketService.deleteTicket({code: paymentData.data.external_reference});
     //     return res.status(200).json({payload: 'Se canceló la compra del ticket'})
     // }
-    // return res.status(200).json({payload: 'hubo un error'})
+    return res.status(200).json({payload: 'hubo un error'})
 }catch(error){
     next(error)
 }
