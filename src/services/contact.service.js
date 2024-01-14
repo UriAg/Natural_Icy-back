@@ -10,15 +10,4 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-const send=async(from, to, subject, message)=>{
-    return transporter.sendMail({
-        from,
-        to,
-        subject,
-        html:`
-            <p>${message}</p>
-        `
-    }).catch(err=>console.log(err));
-        
-}
-export default { send, transporter}
+export default transporter

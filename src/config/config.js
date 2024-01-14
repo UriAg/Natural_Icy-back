@@ -12,6 +12,7 @@ const config = {
     MAIL_PORT: process.env.MAIL_PORT,
     MAIL_ADMIN: process.env.MAIL_ADMIN,
     SERVER_MAIL: process.env.SERVER_MAIL,
+    MAIL_USER: process.env.MAIL_USER,
     MAIL_PASS: process.env.MAIL_PASS,
     ACCESS_TOKEN: process.env.ACCESS_TOKEN,
     SECRET_KEY: process.env.SECRET_KEY
