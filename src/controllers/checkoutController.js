@@ -27,10 +27,13 @@ async function createPreference(req, res, next){
         let productsWithStock = [];
         let total_amount = 0
         const random_code = uuidv4();
+
         let address;
         req.body.address ? address = req.body.address : address = false
+
         let phone;
         req.body.phone ? phone = req.body.phone : phone = false
+        let purchasedTicket;
         const purchasedProducts = req.body.orderData;
 
         for(const product of purchasedProducts){
@@ -112,7 +115,7 @@ async function createPreference(req, res, next){
             //     cost: 1,
             //     mode: "not_specified",
             // };
-            await ticketService.createTicket({
+            purchasedTicket = await ticketService.createTicket({
                 products: preferenceQuery.items,
                 total_amount,
                 payer: preferenceQuery.payer,
@@ -120,7 +123,7 @@ async function createPreference(req, res, next){
                 code: random_code.toString()
             }) 
         }else{
-            await ticketService.createTicket({
+            purchasedTicket = await ticketService.createTicket({
                 products: preferenceQuery.items,
                 total_amount,
                 payer: preferenceQuery.payer,
@@ -132,7 +135,7 @@ async function createPreference(req, res, next){
         console.log('c')
         await userService.updateUser(
             {email: req.user.email},
-            { $push: { purchases: random_code.toString() } })
+            { $push: { purchases: {payment_id: purchasedTicket._id} } })
             
             console.log('d')
         preference.create({body:preferenceQuery})
@@ -147,7 +150,7 @@ async function createPreference(req, res, next){
             console.log('se eliminó 2')
             await userService.updateUser(
                 { email: req.user.email },
-                { $pull: { purchases: random_code.toString() } })
+                { $pull: { purchases: {payment_id: purchasedTicket._id} } })
                 console.log('se eliminó 3')
         });
       
