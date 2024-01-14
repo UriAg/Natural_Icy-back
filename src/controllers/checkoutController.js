@@ -68,10 +68,11 @@ async function createPreference(req, res, next){
             }
             
         }
-        
+        console.log('a')
         productsWithStock.map(product=>{
             total_amount+=(parseFloat(product.unit_price)*parseInt(product.quantity))
         })
+        console.log('b')
 
         let preferenceQuery = {
             items: productsWithStock,
@@ -103,8 +104,8 @@ async function createPreference(req, res, next){
             preferenceQuery.payer['address'] = {
                 street_name: address.street_name,
                 street_number: parseInt(address.street_number, 10),
-                apartment: address.apartment,
-                aditional_info: address.aditional_info,
+                apartment: address.apartment ? address.apartment : false,
+                aditional_info: address.aditional_info ? address.aditional_info : false,
                 zip_code: parseInt(address.zip_code, 10)
             };
             // preferenceQuery['shipments'] = {
@@ -128,10 +129,12 @@ async function createPreference(req, res, next){
             }) 
 
         }
+        console.log('c')
         await userService.updateUser(
             {email: req.user.email},
             { $push: { purchases: random_code.toString() } })
-
+            
+            console.log('d')
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
 
