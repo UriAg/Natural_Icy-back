@@ -172,6 +172,8 @@ try {
         const ticketResponse = await ticketService.getTicket({code: paymentData.external_reference});
         
         console.log('if b')
+        console.log('########################################################')
+        console.log(ticketResponse)
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de compra',
