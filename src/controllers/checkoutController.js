@@ -135,7 +135,7 @@ async function createPreference(req, res, next){
         console.log('c')
         await userService.updateUser(
             {email: req.user.email},
-            { $push: { purchases: {payment_id: purchasedTicket._id} } })
+            { $push: { purchases: {payment_id: purchasedTicket} } })
             
             console.log('d')
         preference.create({body:preferenceQuery})
@@ -150,7 +150,7 @@ async function createPreference(req, res, next){
             console.log('se eliminó 2')
             await userService.updateUser(
                 { email: req.user.email },
-                { $pull: { purchases: {payment_id: purchasedTicket._id} } })
+                { $pull: { purchases: {payment_id: purchasedTicket} } })
                 console.log('se eliminó 3')
         });
       
