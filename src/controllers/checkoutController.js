@@ -191,7 +191,7 @@ try {
 
                 <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
-                    <span style="color: #333; text-align: center;">Código de opercación: ${paymentData.data.id}</span>
+                    <span style="color: #333; text-align: center; width: 100%;">Código de operación: ${paymentData.data.id}</span>
             
                     <div>
                         <h2 style="color: #555;">Comprador</h2>
@@ -238,7 +238,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.address && ticketResponse.payer.address.aditional_info && `
+                    ${ticketResponse.payer.address && ticketResponse.payer.address.aditional_info && `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
