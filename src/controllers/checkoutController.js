@@ -207,17 +207,17 @@ try {
                                 ${ticketResponse.payer.address.apartment && `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `}
-                                <li style="margin-bottom: 10px;"><b>C.P: </b>${ticketResponse.payer.address.zip_code}</li>
+                                <li style="margin-bottom: 10px;"><b>C.P.: </b>${ticketResponse.payer.address.zip_code}</li>
                                 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a>(numero de flor)</li>
                                 `}
                                 
                             ` : `
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a>(numero de flor)</li>
                                 `}
                             `}
                         </ul>
@@ -250,7 +250,10 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                        <span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>
+                        ${ticketResponse.shipment ? 
+                            `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
+                        :
+                        ''}
                     </div>
                 </div>
         
@@ -272,25 +275,25 @@ try {
                     <div>
                         <h2 style="color: #555;">Contacto</h2>
                         <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 10px;"><b>Soporte: </b>+54 3544 30-0779 (numero de flor)</li>
+                            <li style="margin-bottom: 10px;"><b>Soporte: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola!,%20soy%20${ticketResponse.payer.name}%20${ticketResponse.payer.last_name}" target="_blank">+54 3544 30-0779</a>(numero de flor)</li>
                             <span style="color: #333; width: 100%;">Nos vamos a contactar con vos para acordar la entrega del producto</span>
-                            
+                        </ul>
                         <h2 style="color: #555;">Detalles de la compra</h2>
-                        
+                        <ul style="list-style: none; padding: 0;">
                             ${ticketResponse.shipment ? `
 
-                                <span style="color: #333; width: 100%;">Elegiste la opción de envío a este domicilio</span>
+                                <li style="margin-bottom: 10px;"><b>Opción de retiro: </b>Envío a domicilio</li>
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 
                                 ${ticketResponse.payer.address.apartment && `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `}
-                                <li style="margin-bottom: 10px;"><b>C.P: </b>${ticketResponse.payer.address.zip_code}</li>
+                                <li style="margin-bottom: 10px;"><b>C.P.: </b>${ticketResponse.payer.address.zip_code}</li>
 
                                 
                             ` : `
-                                <span style="color: #333; width: 100%;">Elegiste la opción de retiro en local</span>
+                                <li style="margin-bottom: 10px;"><b>Opción de retiro: </b>Retiro en local</li>
                                 <li style="margin-bottom: 10px;"><b>Dirección del local: </b>Calle falsa 1234</li>
                                 <li style="margin-bottom: 10px;"><b>Horario de atención: </b>Lunes a viernes de 9hs a 13hs</li>
                                 <span style="color: #333; width: 100%;"><b>¡Muy importante!</b> presentarse con la orden de compra</span>
