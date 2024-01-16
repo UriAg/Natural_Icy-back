@@ -185,7 +185,7 @@ try {
 
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
-            subject: 'Orden de compra',
+            subject: 'Orden de venta',
             html:`
             <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
 
@@ -207,6 +207,7 @@ try {
                                 ${ticketResponse.payer.address.apartment && `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `}
+                                <li style="margin-bottom: 10px;"><b>C.P: </b>${ticketResponse.payer.address.zip_code}</li>
                                 
                                 ${ticketResponse.payer.phone && `
                                     <li style="margin-bottom: 10px;"><b>Número de teléfono: </b>${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</li>
@@ -249,13 +250,92 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
+                        <span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>
                     </div>
                 </div>
         
             </body>
         
             `
-        }).catch(err=>console.log(err));        
+        }).catch(err=>console.log(err));
+        
+        await transporter.sendMail({
+            to: ticketResponse.payer.email,
+            subject: 'Orden de compra',
+            html:`
+            <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
+
+                <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                    <h1 style="color: #333; text-align: center;">Resumen de tu compra</h1>
+                    <span style="display: inline-block; color: #333; text-align: center; width: 100%;">Código de operación: ${paymentData.data.id}</span>
+            
+                    <div>
+                        <h2 style="color: #555;">Contacto</h2>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 10px;"><b>Soporte: </b>+54 3544 30-0779 (numero de flor)</li>
+                            <span style="color: #333; width: 100%;">Nos vamos a contactar con vos para acordar la entrega del producto</span>
+                            
+                        <h2 style="color: #555;">Detalles de la compra</h2>
+                        
+                            ${ticketResponse.shipment ? `
+
+                                <span style="color: #333; width: 100%;">Elegiste la opción de envío a este domicilio</span>
+                                <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
+                                <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
+                                
+                                ${ticketResponse.payer.address.apartment && `
+                                    <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
+                                `}
+                                <li style="margin-bottom: 10px;"><b>C.P: </b>${ticketResponse.payer.address.zip_code}</li>
+
+                                
+                            ` : `
+                                <span style="color: #333; width: 100%;">Elegiste la opción de retiro en local</span>
+                                <li style="margin-bottom: 10px;"><b>Dirección del local: </b>Calle falsa 1234</li>
+                                <li style="margin-bottom: 10px;"><b>Horario de atención: </b>Lunes a viernes de 9hs a 13hs</li>
+                                <span style="color: #333; width: 100%;"><b>¡Muy importante!</b> presentarse con la orden de compra</span>
+                            `}
+                        </ul>
+                    </div>
+            
+                    <div>
+                        <h2 style="color: #555;">Los productos que compraste</h2>
+                        ${ticketResponse.products.map(product => `
+                            <div style="background-color: #ebebeb; margin: 10px 0; padding: 10px; text-align: center;">
+                                <ul style="list-style: none; padding: 0;">
+                                    <li style="margin-bottom: 10px;"><b>Nombre: </b>${product.title}</li>
+                                    <li style="margin-bottom: 10px;"><b>ID: </b>${product.id}</li>
+                                    <li style="margin-bottom: 10px;"><b>Categoría: </b>${product.category_id}</li>
+                                    <li style="margin-bottom: 10px;"><b>Cantidad: </b>${product.quantity} unidades</li>
+                                    <li style="margin-bottom: 10px;"><b>Precio: </b>$${product.unit_price}</li>
+                                    <li style="margin-bottom: 10px;"><b>Subtotal: </b>$${product.unit_price * product.quantity}</li>
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+            
+                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info ? `
+                        <div style="margin-top: 20px;">
+                            <h2 style="color: #555;">Información adicional de envío</h2>
+                            <p>${ticketResponse.payer.address.aditional_info}</p>
+                        </div>
+                    `
+                    :
+                    ``}
+            
+                    <div style="text-align:center; margin-top: 20px;">
+                        <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
+                        ${ticketResponse.shipment ? 
+                            `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
+                        :
+                        ''}
+                    </div>
+                </div>
+        
+            </body>
+        
+            `
+        }).catch(err=>console.log(err));     
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
 
