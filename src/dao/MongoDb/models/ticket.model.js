@@ -30,7 +30,8 @@ const ticketModel = mongoose.model('tickets', new mongoose.Schema({
         }
     },
     shipment: Boolean,
-    code: String
+    code: String,
+    isPaid: Boolean
 },{timestamps:true}))
 
 export default ticketModel;

@@ -21,8 +21,12 @@ class UserService{
         return await this.dao.updateOne(filter, update);
     }
 
-    async createUser({name, last_name, email, role, password, cart, favorites}){
-        return await this.dao.create({name, last_name, email, role, password, cart, favorites});
+    async updateManyUsers(filter, update){
+        return await this.dao.updateMany(filter, update);
+    }
+
+    async createUser(user){
+        return await this.dao.create(user);
     }
 
 }

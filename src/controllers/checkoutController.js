@@ -71,11 +71,9 @@ async function createPreference(req, res, next){
             }
             
         }
-        console.log('a')
         productsWithStock.map(product=>{
             total_amount+=(parseFloat(product.unit_price)*parseInt(product.quantity))
         })
-        console.log('b')
 
         let preferenceQuery = {
             items: productsWithStock,
@@ -120,7 +118,8 @@ async function createPreference(req, res, next){
                 total_amount,
                 payer: preferenceQuery.payer,
                 shipment: true,
-                code: random_code.toString()
+                code: random_code.toString(),
+                isPaid: false
             }) 
         }else{
             purchasedTicket = await ticketService.createTicket({
@@ -128,16 +127,15 @@ async function createPreference(req, res, next){
                 total_amount,
                 payer: preferenceQuery.payer,
                 shipment: false,
-                code: random_code.toString()
+                code: random_code.toString(),
+                isPaid: false
             }) 
 
         }
-        console.log('c')
         await userService.updateUser(
             {email: req.user.email},
             { $push: { purchases: {payment_id: purchasedTicket} } })
             
-            console.log('d')
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
 
@@ -145,13 +143,10 @@ async function createPreference(req, res, next){
                 id: response.id
             });
         }).catch(async function (error) {
-            console.log('se eliminó')
             await ticketService.deleteTicket({code: random_code.toString()});
-            console.log('se eliminó 2')
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket} } })
-                console.log('se eliminó 3')
         });
       
     }catch(error) {
@@ -170,7 +165,9 @@ try {
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
-    console.log(orderState.data.status)
+    console.log(req)
+    console.log("###########################################################")
+    console.log(req.headers)
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
     //     CustomError.createError({
@@ -183,7 +180,9 @@ try {
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
         
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
-        
+        await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
+        {$set: {isPaid: true}})
+
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de compra',
@@ -260,7 +259,7 @@ try {
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
 
-    if (orderState && orderState.data.status === 'rejected') {
+    if (orderState && orderState.data.status === 'rejected' ) {
         console.log('se eliminó')
         await ticketService.deleteTicket({code: paymentData.data.external_reference});
         return res.status(200).json({payload: 'Se canceló la compra del ticket'})

@@ -5,6 +5,10 @@ class TicketService{
         this.dao=new dao()
     }
 
+    async getAllTickets(filter){
+        return await this.dao.getAll(filter)
+    }
+
     async getTicket(filter){
         return await this.dao.getOne(filter)
     }
@@ -13,8 +17,16 @@ class TicketService{
         return await this.dao.create(ticket)
     }
 
-    async deleteTicket(ticket){
-        return await this.dao.delete(ticket)
+    async updateTicket(filter, update){
+        return await this.dao.updateTicket(filter, update)
+    }
+
+    async deleteTicket(id){
+        return await this.dao.delete(id)
+    }
+
+    async deleteManyTickets(filter){
+        return await this.dao.deleteMany(filter)
     }
 
 }

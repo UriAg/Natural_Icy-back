@@ -30,6 +30,10 @@ class MongoDaoUsers{
         return await usersModel.updateOne(filter, update).lean();
     }
 
+    async updateMany(filter, update){
+        return await usersModel.updateMany(filter, update).lean();
+    }
+
     async create(user){
         return await usersModel.create(user);
     }
