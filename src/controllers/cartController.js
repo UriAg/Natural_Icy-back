@@ -47,3 +47,10 @@ async function getCartProductsFromBD(req, res, next) {
       next(error);
     }
 }
+
+function notFound(req, res){
+  res.setHeader('Content-Type','application/json');
+  return res.status(404).json({payload:'Bad request, 404 url not found'});
+}
+
+export default { getCartProductsFromBD, notFound }
