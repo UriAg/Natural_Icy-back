@@ -21,7 +21,7 @@ function showCart(){
       fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
   }
 
-  fetch('https://naturalicy-back-production.up.railway.app/api/carts/selected', fetchOptions)
+  fetch('http://localhost:3000/api/carts/selected', fetchOptions)
   .then(res => res.json())
   .then(res => {
       const productsDiv = document.querySelector('.items')
@@ -41,7 +41,7 @@ function showCart(){
               <p><b>Price: $</b id="unit-price">${product.price}</p>
               <p><b>Quantity: </b id="quantity">${product.quantity}</p>
               <p><b>Category: </b>${product.category}</p>
-              ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://naturalicy-back-production.up.railway.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+              ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="http://localhost:3000/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
               <button type="button">Eliminar del carrito</button>
               <hr>
               `
@@ -93,7 +93,7 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
     }
 
   
-    fetch("https://naturalicy-back-production.up.railway.app/api/checkout/createPreference", fetchOptions)
+    fetch("http://localhost:3000/api/checkout/createPreference", fetchOptions)
       .then(function (response) {
         return response.json();
       })

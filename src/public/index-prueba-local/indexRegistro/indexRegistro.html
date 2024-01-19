@@ -16,7 +16,7 @@
 <script>
     function register(){
         let tokenCookie = localStorage.getItem('tokenCookie');
-        const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/register';
+        const URL = 'http://localhost:3000/api/sessions/register';
         const DATA = {
             name: 'Uriel',
             last_name: 'Agüero',
@@ -51,7 +51,7 @@
 
     // function register(){
     //     let tokenCookie = localStorage.getItem('tokenCookie');
-    //     const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/verifiedAccount';
+    //     const URL = 'http://localhost:3000/api/sessions/verifiedAccount';
     //     const DATA = {
     //         name: 'Uriel',
     //         last_name: 'Aguero',
