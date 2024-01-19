@@ -15,30 +15,6 @@ export const validateHash = (password, user) => bcrypt.compareSync(password, use
 
 export const generateJWT=(user)=>jwt.sign({user}, config.PRIVATE_KEY, {expiresIn: '24h'})
 
-export const validateJWT=(req, res, next)=>{
-    if(!req.cookies.tokenCookie){
-        next(CustomError.createError({
-            name:"Token de acceso inexistente",
-            cause: "Token inexistente o inválido, por favor logueese",
-            code: errorTypes.AUTHENTICATION_ERROR
-        }))
-    }
-    let token = req.cookies.tokenCookie
-
-    jwt.verify(token, config.PRIVATE_KEY, (error, credentials)=>{
-        if(error){
-            next(CustomError.createError({
-                name:"Token de acceso inválido",
-                cause: "Token inválido, por favor logueese",
-                code: errorTypes.AUTHORIZATION_ERROR
-            }))
-        }
-        req.user = credentials.user
-
-        next()
-    })
-}
-
 export const passportCall=(strategy)=>{
     return async function(req, res, next){
         passport.authenticate(strategy, function(err, user, info, status){

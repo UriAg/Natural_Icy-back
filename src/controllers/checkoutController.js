@@ -88,8 +88,8 @@ async function createPreference(req, res, next){
             },
             binary_mode: true,
             back_urls: {
-                success: "http://127.0.0.1:5500/src/public/index-local/index.html/src/public/index-prueba-local/index.html",
-                failure: "http://127.0.0.1:5500/src/public/index-local/index.html/src/public/index-prueba-local/index.html",
+                success: config.SUCCESS_PAY,
+                failure: config.FAILURE_PAY,
             },
             auto_return: 'approved',
             payment_methods: {
@@ -165,9 +165,7 @@ try {
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
-    console.log(req)
-    console.log("###########################################################")
-    console.log(req.headers)
+    
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
     //     CustomError.createError({
@@ -182,12 +180,16 @@ try {
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
         await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
         {$set: {isPaid: true}})
+        let clientPhoneReplaced;
+        if(ticketResponse.payer.phone){
+            clientPhoneReplaced = `${ticketResponse.payer.phone.area_code}${ticketResponse.payer.phone.number.replace(/\s/g, '')}`
+        }
 
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de venta',
             html:`
-            <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
+            <body style="background-color: #f2f2f2; margin: 0; padding: 0; font-family: 'Roboto';">
 
                 <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <h1 style="color: #333; text-align: center;">¡Se ha registrado una venta!</h1>
@@ -204,20 +206,22 @@ try {
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
                                 
-                                ${ticketResponse.payer.address.apartment && `
+                                ${ticketResponse.payer.address.apartment ? `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
-                                `}
+                                `
+                                :
+                                ``}
                                 <li style="margin-bottom: 10px;"><b>C.P.: </b>${ticketResponse.payer.address.zip_code}</li>
                                 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a>(numero de flor)</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=${clientPhoneReplaced}&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a></li>
                                 `}
                                 
                             ` : `
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>No</li>
 
                                 ${ticketResponse.payer.phone && `
-                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a>(numero de flor)</li>
+                                    <li style="margin-bottom: 10px;"><b>Número de teléfono: </b><a href="https://api.whatsapp.com/send?phone=${clientPhoneReplaced}&text=¡Hola%20${ticketResponse.payer.name}!" target="_blank">${ticketResponse.payer.phone.area_code} ${ticketResponse.payer.phone.number}</a></li>
                                 `}
                             `}
                         </ul>
@@ -239,7 +243,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info ? `
+                    ${ticketResponse.payer.address.aditional_info ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
@@ -266,7 +270,7 @@ try {
             to: ticketResponse.payer.email,
             subject: 'Orden de compra',
             html:`
-            <body style="font-family: 'Arial', sans-serif; background-color: #f2f2f2; margin: 0; padding: 0;">
+            <body style="background-color: #f2f2f2; margin: 0; padding: 0; font-family: 'Roboto';">
 
                 <div style="width: 80%; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                     <h1 style="color: #333; text-align: center;">Resumen de tu compra</h1>
@@ -275,7 +279,7 @@ try {
                     <div>
                         <h2 style="color: #555;">Contacto</h2>
                         <ul style="list-style: none; padding: 0;">
-                            <li style="margin-bottom: 10px;"><b>Soporte: </b><a href="https://api.whatsapp.com/send?phone=1234&text=¡Hola!,%20soy%20${ticketResponse.payer.name}%20${ticketResponse.payer.last_name}" target="_blank">+54 3544 30-0779</a>(numero de flor)</li>
+                            <li style="margin-bottom: 10px;"><b>Soporte: </b><a href="https://api.whatsapp.com/send?phone=+5491136456177&text=¡Hola!,%20soy%20${ticketResponse.payer.name}%20${ticketResponse.payer.last_name}" target="_blank">+54 9 11 3645-6177</a></li>
                             <span style="color: #333; width: 100%;">Nos vamos a contactar con vos para acordar la entrega del producto</span>
                         </ul>
                         <h2 style="color: #555;">Detalles de la compra</h2>
@@ -286,9 +290,11 @@ try {
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 
-                                ${ticketResponse.payer.address.apartment && `
+                                ${ticketResponse.payer.address.apartment ? `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
-                                `}
+                                `
+                                :
+                                ``}
                                 <li style="margin-bottom: 10px;"><b>C.P.: </b>${ticketResponse.payer.address.zip_code}</li>
 
                                 
@@ -317,7 +323,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.shipment && ticketResponse.payer.address.aditional_info ? `
+                    ${ticketResponse.payer.address.aditional_info ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
@@ -338,7 +344,22 @@ try {
             </body>
         
             `
-        }).catch(err=>console.log(err));     
+        }).catch(err=>console.log(err));
+
+        ticketResponse.products.map(async product=>{
+            const updateProduct = await productsService.updateOne(
+                {_id:product.id},
+                {$inc: { stock: - product.quantity }}
+            )
+
+            if(updateProduct.stock <= 0){
+                await productsService.updateOne(
+                    {_id:product.id},
+                    {$set: { isAvailable: false }}
+                )
+            }
+        })
+
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
 

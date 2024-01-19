@@ -36,35 +36,49 @@ export const initPassport = async ()=>{
         }
     ))
 
-    passport.use('register', new local.Strategy(
-        {
-            usernameField: 'email',
-            passReqToCallback: true,
-        },
-        async (req, username, password, done)=>{
-            try{
-                let {name, last_name, role, email } = req.body;
-                if(!name || !last_name || !role || !email || !password) return done(null, false);
+    // passport.use('register', new local.Strategy(
+    //     async (req, done)=>{
+    //         try{
+    //             console.log('a')
+    //             const {token, userToken} = req.body
+    //             console.log('b')
+    //             const userTokenDecoded = jwt.verify(userToken, config.PRIVATE_KEY)
+    //             console.log('c')
                 
-                const userExists = await userService.getUserByEmail(email)
+    //             if(!userTokenDecoded) return done(null, false, {error:`El token proveído no es válido`})
                 
-                if(userExists) return done(null, false, {message:`Usuario: ${username}, previamente registrado`})
-            
-            const createdUser = await userService.createUser({
-                name: name,
-                    last_name: last_name,
-                    email: email,
-                    role: role,
-                    purchases:[],
-                    password: generateHash(password),
-                })
-    
-                return done(null, createdUser);
-            }catch (err){
-                return done(err)
-            }
-        }
-    ))
+    //             console.log('d')
+    //             const recreatedToken = crypto.createHash('sha256').update(userTokenDecoded.token.first_data + userTokenDecoded.token.second_data).digest('hex').toString();
+    //             console.log('e')
+                
+    //             if(token !== recreatedToken){
+    //                 return done(null, false, {error:`No se pudo autenticar la similitud de tokens`})
+    //             }
+    //             console.log('f')
+                
+    //             const userExists = await userService.getUserByEmail(userTokenDecoded.email)
+    //             console.log('g')
+                
+    //             if(userExists) return done(null, false, {error:`El correo ya está asociado a una cuenta`})
+                
+    //             console.log('h')
+    //             const createdUser = await userService.createUser({
+    //                 name: userTokenDecoded.name,
+    //                 last_name: userTokenDecoded.last_name,
+    //                 email: userTokenDecoded.email,
+    //                 role: userTokenDecoded.role,
+    //                 purchases:[],
+    //                 password: generateHash(userTokenDecoded.password),
+    //                 token:{info:"", timestamp:0}
+    //             })
+                
+    //             console.log('i')
+    //             return done(null, createdUser);
+    //         }catch (err){
+    //             return done(err)
+    //         }
+    //     }
+    // ))
 
     passport.use('login', new local.Strategy(
         {

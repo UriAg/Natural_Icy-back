@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>registrarse</title>
+</head>
+<body>
+    <div>
+        <p>Esto representa todos los campos, name, last_name, role, email y pass</p>
+        <button onclick="register()">
+            Registrarse
+        </button>
+    </div>
+</body>
+<script>
+    function register(){
+        let tokenCookie = localStorage.getItem('tokenCookie');
+        const URL = 'http://localhost:3000/api/sessions/register';
+        const DATA = {
+            name: 'Uriel',
+            last_name: 'Agüero',
+            email: "uriel.aguero1812@gmail.com",
+            role: 'CREATOR',
+            password:"123",
+            repeatedPassword:"123"
+        };
+
+        let fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(DATA),
+        };
+
+        if (tokenCookie) {
+            fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
+        }
+
+        fetch(URL, fetchOptions)
+        .then((res) => res.json())
+        .then(res => {
+            console.log(res)
+        })
+        .catch((error) => console.log("Error:", error))
+    }
+
+
+    
+
+    // function register(){
+    //     let tokenCookie = localStorage.getItem('tokenCookie');
+    //     const URL = 'http://localhost:3000/api/sessions/verifiedAccount';
+    //     const DATA = {
+    //         name: 'Uriel',
+    //         last_name: 'Aguero',
+    //         email: emailParam,
+    //         role: 'CREATOR',
+    //         password:"123"
+    //     };
+
+    //     let fetchOptions = {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(DATA),
+    //     };
+
+    //     if (tokenCookie) {
+    //         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
+    //     }
+
+    //     fetch(URL, fetchOptions)
+    //     .then((res) => res.json())
+    //     .then(res => {
+    //         console.log(res)
+    //     })
+    //     .catch((error) => console.log("Error:", error))
+    // }
+</script>
+
+</html>

@@ -17,6 +17,10 @@ const usersModel = mongoose.model('users', new mongoose.Schema({
         },
     ],
     password:String,
+    token:{
+        info:String,
+        timestamp:Number
+    }
 }, {
     timestamps:true
 }))

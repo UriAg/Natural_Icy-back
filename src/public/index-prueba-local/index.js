@@ -9,43 +9,11 @@ function rellenar(){
     const category = document.getElementById('category').value = "Edit";
 }
 
-//---------------------------REGISTER
-function register(){
-    let tokenCookie = localStorage.getItem('tokenCookie');
-    const URL = 'http://localhost:3000/api/sessions/register';
-    const DATA = {
-        name: 'Marta',
-        last_name: 'papela',
-        email: "marta@gmail.com",
-        role: 'USER',
-        password:"123"
-    };
-
-    let fetchOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(DATA),
-    };
-
-    if (tokenCookie) {
-        fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
-    }
-
-    fetch(URL, fetchOptions)
-    .then((res) => res.json())
-    .then(res => {
-        console.log(res)
-    })
-    .catch((error) => console.log("Error:", error))
-}
-
 //---------------------------LOGIN
 function login(){
     let tokenCookie = localStorage.getItem('tokenCookie');
     const URL = 'http://localhost:3000/api/sessions/login';
-    const DATA = { email: "marta@gmail.com", password:"123" };
+    const DATA = { email: "uriel.aguero1812@gmail.com", password:"123" };
 
     let fetchOptions = {
         method: 'POST',
