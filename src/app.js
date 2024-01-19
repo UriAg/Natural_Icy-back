@@ -38,7 +38,7 @@ initPassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
-app.use(cors({origin:'https://natural-icy-market.netlify.app/'}))
+app.use(cors({origin:'natural-icy-market.netlify.app'}))
 
 const weekInterval = 7 * 24 * 60 * 60 * 1000;
 const customSessions = new CustomSessionsRouter()
