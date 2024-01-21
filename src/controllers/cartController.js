@@ -5,9 +5,9 @@ import CustomError from '../services/errors/CustomError.js';
 
 async function getCartProductsFromBD(req, res, next) {
     try {
-      // res.setHeader('Access-Control-Allow-Origin', '*');
-      // res.setHeader('Access-Control-Allow-Methods', 'POST');
-      // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'POST');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       res.setHeader("Content-Type", "application/json");
 
       if(!req.body || !req.body.length){
