@@ -19,7 +19,7 @@ import CustomCheckoutRouter from './dao/MongoDb/routes/customCheckout.router.js'
 
 const app = express();
 // app.use(cors({origin: allowedFetchOrigins}));
-app.use(cors({origin: '*'}));
+app.use(cors({origin: 'http://127.0.0.1:5500'}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, '/public/images/products')));
