@@ -13,13 +13,7 @@ const client = new MercadoPagoConfig({ accessToken: config.ACCESS_TOKEN, options
 const preference = new Preference(client);
 
 async function createPreference(req, res, next){
-    try {
-        res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
-        res.header('Access-Control-Allow-Methods', 'POST');
-        res.header('Access-Control-Allow-Headers', 'Content-Type');
-        res.header('Access-Control-Allow-Credentials', 'true');
-
-     
+    try {     
         res.setHeader('Content-Type','application/json');
         if(!req.body.orderData || !req.body.orderData.length){
             CustomError.createError({
