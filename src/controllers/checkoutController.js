@@ -14,7 +14,7 @@ const preference = new Preference(client);
 
 async function createPreference(req, res, next){
     try {     
-        res.setHeader('Content-Type','application/json');
+        // res.setHeader('Content-Type','application/json');
         if(!req.body.orderData || !req.body.orderData.length){
             CustomError.createError({
                 name: "Error buscando productos",
