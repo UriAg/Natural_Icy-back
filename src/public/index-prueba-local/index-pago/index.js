@@ -21,7 +21,7 @@ function showCart(){
       fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
   }
 
-  fetch('https://natural-icy-market.netlify.app/api/carts/selected', fetchOptions)
+  fetch('https://naturalicy-back-production.up.railway.app/api/carts/selected', fetchOptions)
   .then(res => res.json())
   .then(res => {
       const productsDiv = document.querySelector('.items')
@@ -41,7 +41,7 @@ function showCart(){
               <p><b>Price: $</b id="unit-price">${product.price}</p>
               <p><b>Quantity: </b id="quantity">${product.quantity}</p>
               <p><b>Category: </b>${product.category}</p>
-              ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://natural-icy-market.netlify.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+              ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://naturalicy-back-production.up.railway.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
               <button type="button">Eliminar del carrito</button>
               <hr>
               `
@@ -82,7 +82,8 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
 
     let fetchOptions = {
         method: 'POST',
-        mode: 'cors',
+        // mode: 'cors',
+        // credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -93,11 +94,12 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
     }
 
   
-    fetch("https://natural-icy-market.netlify.app/api/checkout/createPreference", fetchOptions)
+    fetch("https://naturalicy-back-production.up.railway.app/api/checkout/createPreference", fetchOptions)
       .then(function (response) {
         return response.json();
       })
       .then(function (preference) {
+        console.log(preference)
         createCheckoutButton(preference.id);
   
         $(".shopping-cart").fadeOut(500);
@@ -126,8 +128,9 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
           },
           callbacks: {
             onError: (error) => console.error(error),
-            onReady: () => {}
-          }
+            onSubmit:()=>{},
+            onReady: () => {},
+          },
         }
       );
     };

@@ -32,4 +32,4 @@ export const passportCall=(strategy)=>{
     }
 }
 
-export const allowedFetchOrigins = ['http://127.0.0.1:5500', 'https://natural-icy-market.netlify.app'];
+export const allowedFetchOrigins = ['127.0.0.1:5500', 'natural-icy-market.netlify.app'];
