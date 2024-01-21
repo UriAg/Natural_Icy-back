@@ -6,11 +6,11 @@ import CustomError from '../services/errors/CustomError.js';
 async function getCartProductsFromBD(req, res, next) {
     try {
       // res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
-      res.setHeader('Access-Control-Allow-Methods', 'POST');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader("Content-Type", "application/json");
+      res.setHeader('access-control-allow-origin', 'http://127.0.0.1:5500');
+      res.setHeader('access-control-allow-methods', 'POST');
+      res.setHeader('access-control-allow-headers', 'content-type');
+      res.setHeader('access-control-allow-credentials', 'true');
+      res.setHeader("content-type", "application/json");
 
       if(!req.body || !req.body.length){
         CustomError.createError({
