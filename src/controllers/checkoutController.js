@@ -364,7 +364,6 @@ try {
     }
 
     if (orderState && orderState.data.status === 'rejected' ) {
-        console.log('se eliminó')
         await ticketService.deleteTicket({code: paymentData.data.external_reference});
         return res.status(200).json({payload: 'Se canceló la compra del ticket'})
     }

@@ -10,12 +10,11 @@ function showCart(){
   
   let fetchOptions = {
       method: 'POST',
-      mode: 'cors',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(productIds)
-  };
+      body: JSON.stringify(productIds),
+    };
 
   if (tokenCookie) {
       fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
@@ -82,8 +81,6 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
 
     let fetchOptions = {
         method: 'POST',
-        // mode: 'cors',
-        // credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
