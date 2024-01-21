@@ -18,7 +18,7 @@ import CustomCheckoutRouter from './dao/MongoDb/routes/customCheckout.router.js'
 
 
 const app = express();
-
+app.use(cors({origin: allowedFetchOrigins}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, '/public/images/products')));
@@ -39,15 +39,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
 // app.use(cors({origin:'https://natural-icy-market.netlify.app'}))
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedFetchOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('No permitido por CORS'));
-    }
-  },
-}));
 
 const weekInterval = 7 * 24 * 60 * 60 * 1000;
 const customSessions = new CustomSessionsRouter()

@@ -271,6 +271,6 @@ function showFavorites(){
     })
     .catch(error => console.log(error))
 }
-showFavorites()
+// showFavorites()
 
 
