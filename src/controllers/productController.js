@@ -12,6 +12,8 @@ import { promises as fsPromises } from "fs";
 import { __dirname } from "../utils.js";
 
 async function getProductsFromBD(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   try {
     res.setHeader("Content-Type", "application/json");
     const products = await productsService.getProducts();
