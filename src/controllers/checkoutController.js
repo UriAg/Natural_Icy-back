@@ -17,6 +17,8 @@ async function createPreference(req, res, next){
         res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
         res.setHeader('Access-Control-Allow-Methods', 'POST');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+
      
         res.setHeader('Content-Type','application/json');
         if(!req.body.orderData || !req.body.orderData.length){
