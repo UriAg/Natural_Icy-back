@@ -14,10 +14,10 @@ const preference = new Preference(client);
 
 async function createPreference(req, res, next){
     try {
-        res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
-        res.setHeader('Access-Control-Allow-Methods', 'POST');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+        res.header('Access-Control-Allow-Methods', 'POST');
+        res.header('Access-Control-Allow-Headers', 'Content-Type');
+        res.header('Access-Control-Allow-Credentials', 'true');
 
      
         res.setHeader('Content-Type','application/json');
