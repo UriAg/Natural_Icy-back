@@ -25,7 +25,7 @@ async function pasoDos(){
     email
   }
 
-  fetch('http://localhost:3000/api/sessions/changePassword', {
+  fetch('https://natural-icy-market.netlify.app/api/sessions/changePassword', {
   method: 'POST',
   headers: {
       'Content-Type': 'application/json',

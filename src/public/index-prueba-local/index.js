@@ -12,7 +12,7 @@ function rellenar(){
 //---------------------------LOGIN
 function login(){
     let tokenCookie = localStorage.getItem('tokenCookie');
-    const URL = 'http://localhost:3000/api/sessions/login';
+    const URL = 'https://natural-icy-market.netlify.app/api/sessions/login';
     const DATA = { email: "uriel.aguero1812@gmail.com", password:"234" };
 
     let fetchOptions = {
@@ -51,7 +51,7 @@ function logout(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('http://localhost:3000/api/sessions/logout', fetchOptions)
+    fetch('https://natural-icy-market.netlify.app/api/sessions/logout', fetchOptions)
     .then((res) => res.json())
     .then(res => {
         localStorage.removeItem('tokenCookie');
@@ -100,7 +100,7 @@ function subirProducto() {
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('http://localhost:3000/api/products', fetchOptions)
+    fetch('https://natural-icy-market.netlify.app/api/products', fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -154,7 +154,7 @@ function editarProducto(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch(`http://localhost:3000/api/products/${productoAEditar}`, fetchOptions)
+    fetch(`https://natural-icy-market.netlify.app/api/products/${productoAEditar}`, fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -183,7 +183,7 @@ function eliminarProducto(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch(`http://localhost:3000/api/products/${producto}`, fetchOptions)
+    fetch(`https://natural-icy-market.netlify.app/api/products/${producto}`, fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -200,7 +200,7 @@ function eliminarProducto(){
 
 //---------------------------MOSTRAR PRODUCTOS
 function showProducts(){
-    fetch('http://localhost:3000/api/products/', {method:'GET'})
+    fetch('https://natural-icy-market.netlify.app/api/products/', {method:'GET'})
     .then(res => res.json())
     .then(res => {
         const productsDiv = document.getElementById('productos');
@@ -216,7 +216,7 @@ function showProducts(){
                 <p><b>Price: </b>$${product.price}</p>
                 <p><b>Category: </b>${product.category}</p>
                 <p><b>Stock: </b>${product.stock}</p>
-                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="http://localhost:3000/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://natural-icy-market.netlify.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
                 <button type="button">Agregar a favoritos</button>
                 <button type="button">Agregar al carrito</button>
                 `
@@ -246,7 +246,7 @@ function showFavorites(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('http://localhost:3000/api/products/selected', fetchOptions)
+    fetch('https://natural-icy-market.netlify.app/api/products/selected', fetchOptions)
     .then(res => res.json())
     .then(res => {
         const productsDiv = document.getElementById('favoritos');
@@ -263,7 +263,7 @@ function showFavorites(){
                 <p><b>Price: </b>$${product.price}</p>
                 <p><b>Category: </b>${product.category}</p>
                 <p><b>Stock: </b>${product.stock}</p>
-                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="http://localhost:3000/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://natural-icy-market.netlify.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
                 <button type="button">Eliminar de favoritos</button>
                 `
             productsDiv.append(div);

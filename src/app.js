@@ -1,5 +1,5 @@
 import express from 'express';
-import { __dirname } from './utils.js';
+import { __dirname, allowedFetchOrigins } from './utils.js';
 import path from 'path';
 import ConnectMongo from 'connect-mongo'
 import session from 'express-session';
@@ -38,7 +38,16 @@ initPassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
-app.use(cors({origin:'https://natural-icy-market.netlify.app'}))
+// app.use(cors({origin:'https://natural-icy-market.netlify.app'}))
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedFetchOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+}));
 
 const weekInterval = 7 * 24 * 60 * 60 * 1000;
 const customSessions = new CustomSessionsRouter()
