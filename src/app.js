@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
-app.use(cors({origin: 'http://127.0.0.1:5500'}));
+app.use(cors({origin: '*'}));
 app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
