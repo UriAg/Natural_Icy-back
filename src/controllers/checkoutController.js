@@ -143,7 +143,7 @@ async function createPreference(req, res, next){
         console.log('g')
         await userService.updateUser(
             {email: req.user.email},
-            { $push: { purchases: {payment_id: purchasedTicket} } })
+            { $push: { purchases: {payment_id: purchasedTicket._id} } })
             
             console.log('h')
         console.log('#####################################################################')
@@ -159,10 +159,10 @@ async function createPreference(req, res, next){
             console.log('error')
             await ticketService.deleteTicket({code: random_code.toString()});
             console.log('error 2')
-            console.log(purchasedTicket)
+            console.log(purchasedTicket._id)
             await userService.updateUser(
                 { email: req.user.email },
-                { $pull: { purchases: {payment_id: purchasedTicket} } })
+                { $pull: { purchases: {payment_id: purchasedTicket._id} } })
             return res.status(200).json({payload:'No se concretó la compra', error})
         });
       return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
