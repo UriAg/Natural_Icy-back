@@ -191,6 +191,7 @@ try {
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
         console.log('adentro d')
+        console.log(ticketResponse.payer.address.apartment)
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de venta',
@@ -353,11 +354,10 @@ try {
         }).catch(err=>console.log(err));
         console.log('adentro f')
         ticketResponse.products.map(async product=>{
-            const updateProduct = await productsService.updateOne(
+            await productsService.updateOne(
                 {_id:product.id},
                 {$inc: { stock: - product.quantity }}
             )
-            console.log(updateProduct)
             const productUpdated = await productsService.getProductById(product.id)
             if(productUpdated.stock <= 0){
                 await productsService.updateOne(

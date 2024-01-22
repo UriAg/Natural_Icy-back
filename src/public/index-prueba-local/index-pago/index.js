@@ -67,8 +67,8 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
     const address = {
       street_name: 'Calle falsa',
       street_number: 7732,
-      apartment: '7C',
-      aditional_info: 'Es por ahí, buscá',
+      // apartment: false,
+      // aditional_info: false,
       zip_code: '5885' 
     }
     const phone = {
