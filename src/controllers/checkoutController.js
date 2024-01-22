@@ -161,6 +161,7 @@ async function createPreference(req, res, next){
             console.log('error 2')
             console.log(purchasedTicket._id)
             const isTicketExisting = await userService.getUserByFilter({purchases: {$elemMatch: {payment_id: purchasedTicket._id}}})
+            console.log(isTicketExisting)
             if(isTicketExisting){
                 await userService.updateUser(
                     { email: req.user.email },
