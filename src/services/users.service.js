@@ -17,6 +17,10 @@ class UserService{
         return await this.dao.getOne({_id: id});
     }
 
+    async getUserByFilter(filter){
+        return await this.dao.getOne(filter);
+    }
+
     async updateUser(filter, update){
         return await this.dao.updateOne(filter, update);
     }
