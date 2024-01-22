@@ -149,22 +149,42 @@ async function createPreference(req, res, next){
             console.log('h')
         console.log('#####################################################################')
 
-        try {
-            const preferenceObject = await preference.create({body:preferenceQuery})
-            if(preferenceObject.ok){
-                return res.status(200).json({
-                    id: preferenceObject.id
-                });
-            }
-        } catch (error) {
+        // try {
+        //     const preferenceObject = await preference.create({body:preferenceQuery})
+        //     if(preferenceObject.ok){
+        //         return res.status(200).json({
+        //             id: preferenceObject.id
+        //         });
+        //     }
+        // } catch (error) {
+        //     console.log('error')
+        //     await ticketService.deleteTicket({code: random_code.toString()})
+            
+        //     await userService.updateUser(
+        //         { email: req.user.email },
+        //         { $pull: { purchases: {payment_id: purchasedTicket._id} } })
+        //     return res.status(200).json({payload:'No se concretó la compra', error})
+        // }
+
+        preference.create({body:preferenceQuery})
+        .then(async function (response) {   
+            console.log(response)
+            // console.log(response.id)
+            return res.status(200).json({
+                id: response.id
+        });
+        }).catch(async function (error) {
             console.log('error')
-            await ticketService.deleteTicket({code: random_code.toString()})
+            await ticketService.deleteTicket({code: random_code.toString()});
+            console.log('error 2')
+            console.log(purchasedTicket._id)
             
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket._id} } })
             return res.status(200).json({payload:'No se concretó la compra', error})
-        }
+        });
+
     //   return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
         next(error);
