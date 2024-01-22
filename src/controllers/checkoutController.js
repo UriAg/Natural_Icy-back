@@ -188,7 +188,7 @@ try {
         console.log('adentro c')
         let clientPhoneReplaced;
         if(ticketResponse.payer.phone){
-            clientPhoneReplaced = `${ticketResponse.payer.phone.area_code}${ticketResponse.payer.phone.number.replace(/\s/g, '')}`
+            clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
         console.log('adentro d')
         await transporter.sendMail({
