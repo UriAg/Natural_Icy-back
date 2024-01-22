@@ -155,8 +155,10 @@ async function createPreference(req, res, next){
 
 async function getNotification(req, res, next){
 try {
+    console.log('a')
     res.setHeader('Content-Type','application/json');
     const paymentData = req.body;
+    console.log('b')
     const orderState = await axios.get(`https://api.mercadopago.com/v1/payments/${paymentData.data.id}`, {
         method: 'GET',
         headers:{
@@ -164,6 +166,7 @@ try {
             'Authorization': `Bearer ${config.ACCESS_TOKEN}`
         }
     });
+    console.log('c')
     
     // const signature = req.headers['x-signature'];
     // if (!client.validateWebhookSignature(JSON.stringify(paymentData), signature)) {
@@ -175,15 +178,19 @@ try {
     // }
 
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
+    console.log('adentro a')
         
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
+    console.log('adentro b')
+        
         await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
         {$set: {isPaid: true}})
+        console.log('adentro c')
         let clientPhoneReplaced;
         if(ticketResponse.payer.phone){
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code}${ticketResponse.payer.phone.number.replace(/\s/g, '')}`
         }
-
+        console.log('adentro d')
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de venta',
@@ -264,7 +271,7 @@ try {
         
             `
         }).catch(err=>console.log(err));
-        
+        console.log('adentro e')
         await transporter.sendMail({
             to: ticketResponse.payer.email,
             subject: 'Orden de compra',
@@ -344,7 +351,7 @@ try {
         
             `
         }).catch(err=>console.log(err));
-
+        console.log('adentro f')
         ticketResponse.products.map(async product=>{
             const updateProduct = await productsService.updateOne(
                 {_id:product.id},
@@ -358,14 +365,16 @@ try {
                 )
             }
         })
-
+        console.log('adentro g')
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
-
+    console.log('d')
+    
     if (orderState && orderState.data.status === 'rejected' ) {
         await ticketService.deleteTicket({code: paymentData.data.external_reference});
         return res.status(200).json({payload: 'Se canceló la compra del ticket'})
     }
+    console.log('e')
     return res.status(200).json({payload: 'hubo un error'})
 }catch(error){
     next(error)
