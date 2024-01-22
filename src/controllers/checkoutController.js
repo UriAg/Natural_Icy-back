@@ -14,7 +14,6 @@ const preference = new Preference(client);
 
 async function createPreference(req, res, next){
     try {     
-        console.log('a')
         res.setHeader('Content-Type','application/json');
         if(!req.body.orderData || !req.body.orderData.length){
             CustomError.createError({
@@ -23,7 +22,6 @@ async function createPreference(req, res, next){
                 code: errorTypes.INVALID_ARGS_ERROR,
             });
         }
-        console.log('b')
         
         let outOfStock = [];
         let productsWithStock = [];
@@ -37,10 +35,7 @@ async function createPreference(req, res, next){
         req.body.phone ? phone = req.body.phone : phone = false
         let purchasedTicket;
         const purchasedProducts = req.body.orderData;
-        console.log('c')
-        console.log('#####################################################################')
         for(const product of purchasedProducts){
-            console.log(product)
             if(!isValidObjectId(product.id)){
                 CustomError.createError({
                     name: "Error procesando compra",
@@ -75,12 +70,9 @@ async function createPreference(req, res, next){
             }
             
         }
-        console.log('#####################################################################')
-        console.log('d')
         productsWithStock.map(product=>{
             total_amount+=(parseFloat(product.unit_price)*parseInt(product.quantity))
         })
-        console.log('e')
         
         let preferenceQuery = {
             items: productsWithStock,
@@ -108,7 +100,6 @@ async function createPreference(req, res, next){
             statement_descriptor: 'Natural Icy Market',
             external_reference: random_code.toString()
         };
-        console.log('f')
         
         if (address) {
             preferenceQuery.payer['address'] = {
@@ -141,51 +132,22 @@ async function createPreference(req, res, next){
             }) 
             
         }
-        console.log('g')
         await userService.updateUser(
             {email: req.user.email},
             { $push: { purchases: {payment_id: purchasedTicket._id} } })
-            
-            console.log('h')
-        console.log('#####################################################################')
-
-        // try {
-        //     const preferenceObject = await preference.create({body:preferenceQuery})
-        //     if(preferenceObject.ok){
-        //         return res.status(200).json({
-        //             id: preferenceObject.id
-        //         });
-        //     }
-        // } catch (error) {
-        //     console.log('error')
-        //     await ticketService.deleteTicket({code: random_code.toString()})
-            
-        //     await userService.updateUser(
-        //         { email: req.user.email },
-        //         { $pull: { purchases: {payment_id: purchasedTicket._id} } })
-        //     return res.status(200).json({payload:'No se concretó la compra', error})
-        // }
 
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
-            console.log(response)
-            // console.log(response.id)
             return res.status(200).json({
                 id: response.id
         });
         }).catch(async function (error) {
-            console.log('error')
             await ticketService.deleteTicket({code: random_code.toString()});
-            console.log('error 2')
-            console.log(purchasedTicket._id)
-            
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket._id} } })
             return res.status(200).json({payload:'No se concretó la compra', error})
         });
-
-    //   return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
         next(error);
     }
