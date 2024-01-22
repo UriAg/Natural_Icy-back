@@ -146,13 +146,17 @@ async function createPreference(req, res, next){
             { $push: { purchases: {payment_id: purchasedTicket} } })
             
             console.log('h')
+        console.log('#####################################################################')
+
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
-            
+            console.log(response)
+            console.log(response.id)
             return res.status(200).json({
                 id: response.id
         });
         }).catch(async function (error) {
+            console.log('error')
             await ticketService.deleteTicket({code: random_code.toString()});
             await userService.updateUser(
                 { email: req.user.email },
