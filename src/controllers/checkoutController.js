@@ -169,7 +169,7 @@ async function createPreference(req, res, next){
             // }
             return res.status(200).json({payload:'No se concretó la compra', error})
         });
-      return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
+    //   return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
         next(error);
     }
