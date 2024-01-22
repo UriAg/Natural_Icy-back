@@ -149,19 +149,21 @@ async function createPreference(req, res, next){
             console.log('h')
         console.log('#####################################################################')
 
-        const preferenceObject = await preference.create({body:preferenceQuery})
-        if(preferenceObject.ok){
-            return res.status(200).json({
-                id: preferenceObject.id
-            });
-        }else{
+        try {
+            const preferenceObject = await preference.create({body:preferenceQuery})
+            if(preferenceObject.ok){
+                return res.status(200).json({
+                    id: preferenceObject.id
+                });
+            }
+        } catch (error) {
             console.log('error')
             await ticketService.deleteTicket({code: random_code.toString()})
             
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket._id} } })
-                return res.status(200).json({payload:'No se concretó la compra', preferenceObject})
+            return res.status(200).json({payload:'No se concretó la compra', error})
         }
     //   return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
