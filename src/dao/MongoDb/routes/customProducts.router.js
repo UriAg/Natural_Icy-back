@@ -6,7 +6,9 @@ import uploadImage from "../../../services/uploadImages.js";
 class CustomProductsRouter extends MyRouter{
     init(){
 
-        this.get('/', ['PUBLIC'], productController.getProductsFromBD)
+        this.get('/withStock', ['PUBLIC'], productController.getProductsWithStockFromBD)
+
+        this.get('/withoutStock', ['PUBLIC'], productController.getProductsWithoutStockFromBD)
 
         this.post('/selected', ['PUBLIC'], productController.getFavoritesProductsFromBD)
 

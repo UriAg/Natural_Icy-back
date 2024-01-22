@@ -11,6 +11,38 @@ import path from "path";
 import { promises as fsPromises } from "fs";
 import { __dirname } from "../utils.js";
 
+async function getProductsWithStockFromBD(req, res, next) {
+  try {
+    res.setHeader("Content-Type", "application/json");
+    const products = await productsService.getProducts({isAvailable: true});
+
+    if (!products)
+      return res
+        .status(200)
+        .json({ payload: "No se enconraron productos", products });
+
+    return res.status(200).json({ products });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getProductsWithoutStockFromBD(req, res, next) {
+  try {
+    res.setHeader("Content-Type", "application/json");
+    const products = await productsService.getProducts({isAvailable: false});
+
+    if (!products)
+      return res
+        .status(200)
+        .json({ payload: "No se enconraron productos", products });
+
+    return res.status(200).json({ products });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getProductsFromBD(req, res, next) {
   try {
     res.setHeader("Content-Type", "application/json");
@@ -479,7 +511,8 @@ function notFound(req, res) {
 }
 
 export default {
-  getProductsFromBD,
+  getProductsWithStockFromBD,
+  getProductsWithoutStockFromBD,
   getFavoritesProductsFromBD,
   uploadProductToDB,
   editProductFromDB,
