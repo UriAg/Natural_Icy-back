@@ -86,7 +86,7 @@ const mercadopago = new MercadoPago('APP_USR-278bc867-ac14-4978-8816-bb8f9d0be97
         },
         body: JSON.stringify({orderData, address, phone}),
         // credentials: 'include',
-        // mode:'cors'
+        mode:'cors'
     };
     if (tokenCookie) {
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
