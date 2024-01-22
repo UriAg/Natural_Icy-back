@@ -357,8 +357,9 @@ try {
                 {_id:product.id},
                 {$inc: { stock: - product.quantity }}
             )
-
-            if(updateProduct.stock <= 0){
+            console.log(updateProduct)
+            const productUpdated = await productsService.getProductById(product.id)
+            if(productUpdated.stock <= 0){
                 await productsService.updateOne(
                     {_id:product.id},
                     {$set: { isAvailable: false }}
