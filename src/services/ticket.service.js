@@ -21,8 +21,8 @@ class TicketService{
         return await this.dao.updateTicket(filter, update)
     }
 
-    async deleteTicket(id){
-        return await this.dao.delete(id)
+    async deleteTicket(filter){
+        return await this.dao.delete(filter)
     }
 
     async deleteManyTickets(filter){

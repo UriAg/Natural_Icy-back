@@ -19,8 +19,8 @@ class MongoDaoTicket{
         return await ticketModel.updateOne(filter, update);
     }
 
-    async delete(id){
-        return await ticketModel.deleteOne({_id:id});
+    async delete(filter){
+        return await ticketModel.deleteOne(filter);
     }
 
     async deleteMany(filter){
