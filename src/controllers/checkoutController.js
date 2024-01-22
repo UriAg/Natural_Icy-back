@@ -191,7 +191,7 @@ try {
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
         console.log('adentro d')
-        console.log(ticketResponse.payer.address.apartment)
+        console.log(ticketResponse.payer.address.apartment.typeof())
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de venta',
