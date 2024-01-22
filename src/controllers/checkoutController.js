@@ -184,7 +184,6 @@ try {
         if(ticketResponse.payer.phone){
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
-        console.log(typeof ticketResponse.payer.address.apartment)
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
             subject: 'Orden de venta',
@@ -206,7 +205,7 @@ try {
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
                                 
-                                ${ticketResponse.payer.address.apartment !== false? `
+                                ${!!ticketResponse.payer.address.apartment !== false? `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `
                                 :
@@ -243,7 +242,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.payer.address.aditional_info !== false ? `
+                    ${!!ticketResponse.payer.address.aditional_info !== false ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
@@ -289,7 +288,7 @@ try {
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 
-                                ${ticketResponse.payer.address.apartment !== false? `
+                                ${!!ticketResponse.payer.address.apartment !== false? `
                                     <li style="margin-bottom: 10px;"><b>Número de departamento: </b>${ticketResponse.payer.address.apartment}</li>
                                 `
                                 :
@@ -322,7 +321,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.payer.address.aditional_info !== false ? `
+                    ${!!ticketResponse.payer.address.aditional_info !== false ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
