@@ -164,7 +164,6 @@ async function createPreference(req, res, next){
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket._id} } })
-            return res.status(200).json({payload:'No se concretó la compra', error})
         });
       return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
