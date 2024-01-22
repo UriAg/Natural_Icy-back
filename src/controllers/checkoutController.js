@@ -97,6 +97,7 @@ async function createPreference(req, res, next){
             back_urls: {
                 success: config.SUCCESS_PAY,
                 failure: config.FAILURE_PAY,
+                failure: config.FAILURE_PAY,
             },
             auto_return: 'approved',
             payment_methods: {
