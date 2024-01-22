@@ -151,7 +151,7 @@ async function createPreference(req, res, next){
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
             console.log(response)
-            console.log(response.id)
+            // console.log(response.id)
             return res.status(200).json({
                 id: response.id
         });
