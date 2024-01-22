@@ -160,16 +160,13 @@ async function createPreference(req, res, next){
             await ticketService.deleteTicket({code: random_code.toString()});
             console.log('error 2')
             console.log(purchasedTicket._id)
-            // const isTicketExisting = await userService.getUserByFilter({purchases: {$elemMatch: {payment_id: purchasedTicket._id}}})
-            // console.log(isTicketExisting)
-            // if(isTicketExisting){
-            //     await userService.updateUser(
-            //         { email: req.user.email },
-            //         { $pull: { purchases: {payment_id: purchasedTicket._id} } })
-            // }
+            
+            await userService.updateUser(
+                { email: req.user.email },
+                { $pull: { purchases: {payment_id: purchasedTicket._id} } })
             return res.status(200).json({payload:'No se concretó la compra', error})
         });
-    //   return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
+      return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
         next(error);
     }
