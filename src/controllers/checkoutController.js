@@ -9,11 +9,12 @@ import CustomError from '../services/errors/CustomError.js';
 import { MercadoPagoConfig, Preference } from 'mercadopago'
 import axios from 'axios'
 import userService from '../services/users.service.js';
-const client = new MercadoPagoConfig({ accessToken: config.ACCESS_TOKEN, options: { timeout: 5000 } });
+const client = new MercadoPagoConfig({ accessToken: config.ACCESS_TOKEN});
 const preference = new Preference(client);
 
 async function createPreference(req, res, next){
     try {     
+        console.log('a')
         res.setHeader('Content-Type','application/json');
         if(!req.body.orderData || !req.body.orderData.length){
             CustomError.createError({
@@ -22,21 +23,24 @@ async function createPreference(req, res, next){
                 code: errorTypes.INVALID_ARGS_ERROR,
             });
         }
-
+        console.log('b')
+        
         let outOfStock = [];
         let productsWithStock = [];
         let total_amount = 0
         const random_code = uuidv4();
-
+        
         let address;
         req.body.address ? address = req.body.address : address = false
-
+        
         let phone;
         req.body.phone ? phone = req.body.phone : phone = false
         let purchasedTicket;
         const purchasedProducts = req.body.orderData;
-
+        console.log('c')
+        console.log('#####################################################################')
         for(const product of purchasedProducts){
+            console.log(product)
             if(!isValidObjectId(product.id)){
                 CustomError.createError({
                     name: "Error procesando compra",
@@ -44,9 +48,9 @@ async function createPreference(req, res, next){
                     code: errorTypes.INVALID_ARGS_ERROR,
                 });
             }
-
+            
             const productStock = await productsService.getProductById(product.id);
-
+            
             if(!productStock){
                 CustomError.createError({
                     name: "Error procesando compra",
@@ -71,10 +75,13 @@ async function createPreference(req, res, next){
             }
             
         }
+        console.log('#####################################################################')
+        console.log('d')
         productsWithStock.map(product=>{
             total_amount+=(parseFloat(product.unit_price)*parseInt(product.quantity))
         })
-
+        console.log('e')
+        
         let preferenceQuery = {
             items: productsWithStock,
             payer: {
@@ -100,7 +107,8 @@ async function createPreference(req, res, next){
             statement_descriptor: 'Natural Icy Market',
             external_reference: random_code.toString()
         };
-
+        console.log('f')
+        
         if (address) {
             preferenceQuery.payer['address'] = {
                 street_name: address.street_name,
@@ -110,7 +118,7 @@ async function createPreference(req, res, next){
                 zip_code: parseInt(address.zip_code, 10)
             };
             // preferenceQuery['shipments'] = {
-            //     cost: 1,
+                //     cost: 1,
             //     mode: "not_specified",
             // };
             purchasedTicket = await ticketService.createTicket({
@@ -130,23 +138,26 @@ async function createPreference(req, res, next){
                 code: random_code.toString(),
                 isPaid: false
             }) 
-
+            
         }
+        console.log('g')
         await userService.updateUser(
             {email: req.user.email},
             { $push: { purchases: {payment_id: purchasedTicket} } })
             
+            console.log('h')
         preference.create({body:preferenceQuery})
         .then(async function (response) {   
-
+            
             return res.status(200).json({
                 id: response.id
-            });
+        });
         }).catch(async function (error) {
             await ticketService.deleteTicket({code: random_code.toString()});
             await userService.updateUser(
                 { email: req.user.email },
                 { $pull: { purchases: {payment_id: purchasedTicket} } })
+                return res.status(200).json({payload:'No se concretó la compra', error})
         });
       return res.status(200).json({payload:'El servicio se ejecutó correctamente'})
     }catch(error) {
