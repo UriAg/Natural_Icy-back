@@ -14,7 +14,7 @@ function login(){
     let tokenCookie = localStorage.getItem('tokenCookie');
     // const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/login';
     const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/login';
-    const DATA = { email: "uriel.aguero1812@gmail.com", password:"234" };
+    const DATA = { email: "uriel.aguero1812@gmail.com", password:"123" };
 
     let fetchOptions = {
         method: 'POST',

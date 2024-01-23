@@ -31,5 +31,3 @@ export const passportCall=(strategy)=>{
         })(req, res, next)
     }
 }
-
-export const allowedFetchOrigins = ['http://127.0.0.1:5500', 'https://natural-icy-market.netlify.app'];

@@ -1,5 +1,5 @@
 import express from 'express';
-import { __dirname, allowedFetchOrigins } from './utils.js';
+import { __dirname } from './utils.js';
 import path from 'path';
 import ConnectMongo from 'connect-mongo'
 import session from 'express-session';
@@ -19,13 +19,13 @@ import CustomCheckoutRouter from './dao/MongoDb/routes/customCheckout.router.js'
 
 const app = express();
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', allowedFetchOrigins);
+  res.setHeader('Access-Control-Allow-Origin', config.ALLOWED_ORIGINS);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
-app.use(cors({origin: allowedFetchOrigins}));
+app.use(cors({origin: config.ALLOWED_ORIGINS}));
 app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -46,7 +46,6 @@ initPassport()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
-// app.use(cors({origin:'https://natural-icy-market.netlify.app'}))
 
 const weekInterval = 7 * 24 * 60 * 60 * 1000;
 const customSessions = new CustomSessionsRouter()

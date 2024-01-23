@@ -19,7 +19,7 @@ async function sendVerifyEmail(req, res, next){
             password,
             repeatedPassword
         } = req.body;
-        console.log('a')
+        
         if(req.headers.authorization){
             CustomError.createError({
                 name:"Error enviando mail de registro",
@@ -27,7 +27,6 @@ async function sendVerifyEmail(req, res, next){
                 code: errorTypes.AUTHORIZATION_ERROR
             })
         }
-        console.log('b')
         
         if ( !name || !last_name || !email || !role || !password || !repeatedPassword){
             CustomError.createError({
@@ -37,9 +36,7 @@ async function sendVerifyEmail(req, res, next){
             });
         }
         
-        console.log('c')
         const existingUser = await userService.getUserByEmail(email)
-        console.log('d')
         
         if(existingUser){
             CustomError.createError({
@@ -48,7 +45,6 @@ async function sendVerifyEmail(req, res, next){
                 code: errorTypes.INVALID_ARGS_ERROR,
             });
         }
-        console.log('e')
         
         if (password !== repeatedPassword){
             CustomError.createError({
@@ -57,11 +53,9 @@ async function sendVerifyEmail(req, res, next){
                 code: errorTypes.INVALID_ARGS_ERROR,
             });
         }
-        
-        console.log('f')
+
         const token = crypto.createHash('sha256').update(email + password).digest('hex').toString();
-        
-        console.log('g')
+
         const userToken = generateJWT({
             name,
             last_name,
@@ -73,11 +67,9 @@ async function sendVerifyEmail(req, res, next){
                 second_data: password
             }
         })
-        console.log('h')
-        
+
         const validateLink = `${config.CONFIRM_REGISTER_LINK}?ht=${token}&ut=${userToken}`
-        console.log('i')
-        
+
         await transporter.sendMail({
             to: email,
             subject: 'Email de confirmación',

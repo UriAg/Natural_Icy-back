@@ -18,7 +18,8 @@ const config = {
     SUCCESS_PAY: process.env.SUCCESS_PAY,
     FAILURE_PAY: process.env.FAILURE_PAY,
     RECOVERY_LINK: process.env.RECOVERY_LINK,
-    CONFIRM_REGISTER_LINK: process.env.CONFIRM_REGISTER_LINK
+    CONFIRM_REGISTER_LINK: process.env.CONFIRM_REGISTER_LINK,
+    ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
 }
 
 export default config
