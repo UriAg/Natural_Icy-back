@@ -10,6 +10,8 @@ class CustomProductsRouter extends MyRouter{
 
         this.get('/withoutStock', ['PUBLIC'], productController.getProductsWithoutStockFromBD)
 
+        this.get('/:productId', ['PUBLIC'], productController.getOneProductFromBD)
+
         this.post('/selected', ['PUBLIC'], productController.getFavoritesProductsFromBD)
 
         this.post('/', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.uploadProductToDB)

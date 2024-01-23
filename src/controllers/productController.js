@@ -19,7 +19,7 @@ async function getProductsWithStockFromBD(req, res, next) {
     if (!products)
       return res
         .status(200)
-        .json({ payload: "No se enconraron productos", products });
+        .json({ payload: "No se encontraron productos", products });
 
     return res.status(200).json({ products });
   } catch (error) {
@@ -35,7 +35,7 @@ async function getProductsWithoutStockFromBD(req, res, next) {
     if (!products)
       return res
         .status(200)
-        .json({ payload: "No se enconraron productos", products });
+        .json({ payload: "No se encontraron productos", products });
 
     return res.status(200).json({ products });
   } catch (error) {
@@ -43,17 +43,17 @@ async function getProductsWithoutStockFromBD(req, res, next) {
   }
 }
 
-async function getProductsFromBD(req, res, next) {
+async function getOneProductFromBD(req, res, next) {
   try {
     res.setHeader("Content-Type", "application/json");
-    const products = await productsService.getProducts();
+    const product = await productsService.getProductById(req.params.productId);
 
-    if (!products)
+    if (!product)
       return res
         .status(200)
-        .json({ payload: "No se enconraron productos", products });
+        .json({ payload: "No se encontró el producto", product });
 
-    return res.status(200).json({ products });
+    return res.status(200).json({ product });
   } catch (error) {
     next(error);
   }
@@ -514,6 +514,7 @@ export default {
   getProductsWithStockFromBD,
   getProductsWithoutStockFromBD,
   getFavoritesProductsFromBD,
+  getOneProductFromBD,
   uploadProductToDB,
   editProductFromDB,
   addProductImagesFromDB,
