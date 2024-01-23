@@ -201,7 +201,7 @@ function eliminarProducto(){
 
 //---------------------------MOSTRAR PRODUCTOS
 function showProducts(){
-    fetch('https://naturalicy-back-production.up.railway.app/api/products/', {method:'GET'})
+    fetch('https://naturalicy-back-production.up.railway.app/api/products/withStock', {method:'GET'})
     .then(res => res.json())
     .then(res => {
         const productsDiv = document.getElementById('productos');
