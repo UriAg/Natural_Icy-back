@@ -12,8 +12,8 @@ function rellenar(){
 //---------------------------LOGIN
 function login(){
     let tokenCookie = localStorage.getItem('tokenCookie');
-    // const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/login';
-    const URL = 'https://naturalicy-back-production.up.railway.app/api/sessions/login';
+    // const URL = 'http://localhost:3000/api/sessions/login';
+    const URL = 'http://localhost:3000/api/sessions/login';
     const DATA = { email: "uriel.aguero1812@gmail.com", password:"123" };
 
     let fetchOptions = {
@@ -52,7 +52,7 @@ function logout(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('https://naturalicy-back-production.up.railway.app/api/sessions/logout', fetchOptions)
+    fetch('http://localhost:3000/api/sessions/logout', fetchOptions)
     .then((res) => res.json())
     .then(res => {
         localStorage.removeItem('tokenCookie');
@@ -101,7 +101,7 @@ function subirProducto() {
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('https://naturalicy-back-production.up.railway.app/api/products', fetchOptions)
+    fetch('http://localhost:3000/api/products', fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -155,7 +155,7 @@ function editarProducto(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch(`https://naturalicy-back-production.up.railway.app/api/products/${productoAEditar}`, fetchOptions)
+    fetch(`http://localhost:3000/api/products/${productoAEditar}`, fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -184,7 +184,7 @@ function eliminarProducto(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch(`https://naturalicy-back-production.up.railway.app/api/products/${producto}`, fetchOptions)
+    fetch(`http://localhost:3000/api/products/${producto}`, fetchOptions)
     .then(response=>{
         if(!response.ok){
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -201,7 +201,7 @@ function eliminarProducto(){
 
 //---------------------------MOSTRAR PRODUCTOS
 function showProducts(){
-    fetch('https://naturalicy-back-production.up.railway.app/api/products/withStock', {method:'GET'})
+    fetch('http://localhost:3000/api/products/withStock', {method:'GET'})
     .then(res => res.json())
     .then(res => {
         const productsDiv = document.getElementById('productos');
@@ -217,7 +217,7 @@ function showProducts(){
                 <p><b>Price: </b>$${product.price}</p>
                 <p><b>Category: </b>${product.category}</p>
                 <p><b>Stock: </b>${product.stock}</p>
-                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://naturalicy-back-production.up.railway.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="http://localhost:3000/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
                 <button type="button">Agregar a favoritos</button>
                 <button type="button">Agregar al carrito</button>
                 `
@@ -233,7 +233,7 @@ function showFavorites(){
     let tokenCookie = localStorage.getItem('tokenCookie');
 
     // const productIds = ['659857ac68d4f2ebb581d6e6', '659857ac68d4f2ebb580d6e6', '659857c868d4f2ebb581d6ea', '65985819bc7e6b723972114f']
-    const productIds = []
+    const productIds = [{id:'659857ac68d4f2ebb581d6e6'}]
 
     let fetchOptions = {
         method: 'POST',
@@ -247,7 +247,7 @@ function showFavorites(){
         fetchOptions.headers['Authorization'] = `Bearer ${tokenCookie}`;
     }
 
-    fetch('https://naturalicy-back-production.up.railway.app/api/products/selected', fetchOptions)
+    fetch('http://localhost:3000/api/products/selected', fetchOptions)
     .then(res => res.json())
     .then(res => {
         const productsDiv = document.getElementById('favoritos');
@@ -264,7 +264,7 @@ function showFavorites(){
                 <p><b>Price: </b>$${product.price}</p>
                 <p><b>Category: </b>${product.category}</p>
                 <p><b>Stock: </b>${product.stock}</p>
-                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="https://naturalicy-back-production.up.railway.app/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
+                ${product.thumbnail.length && product.thumbnail.map(img=> `<img src="http://localhost:3000/${img}" width="200px" heigth="150px" alt="Imagen de producto">`)}
                 <button type="button">Eliminar de favoritos</button>
                 `
             productsDiv.append(div);
@@ -272,6 +272,6 @@ function showFavorites(){
     })
     .catch(error => console.log(error))
 }
-// showFavorites()
+showFavorites()
 
 

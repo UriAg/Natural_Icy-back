@@ -68,15 +68,19 @@ async function getFavoritesProductsFromBD(req, res, next) {
         cause: "No se proporcionaron id's",
         code: errorTypes.INVALID_ARGS_ERROR,
       });
-    }
-    
+    }    
     const productIds = req.body;
     const productIdsSanitized = productIds.filter(products=> isValidObjectId(products.id))
 
-    const products = await productsService.getProducts({ _id: { $in: productIdsSanitized } });
+    const idProductsArray = [];
+    productIdsSanitized.map(element=>{
+      idProductsArray.push(element.id)
+    })
+    
+    const products = await productsService.getProducts({ _id: { $in: idProductsArray } });
     
     if (!products) return res.status(200).json({ payload: "No se encontraron productos", products });
-
+    
     return res.status(200).json({ products });
   } catch (error) {
     next(error);
