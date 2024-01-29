@@ -15,7 +15,6 @@ async function sendVerifyEmail(req, res, next){
             name,
             last_name,
             email,
-            role,
             password,
             repeatedPassword
         } = req.body;
@@ -23,12 +22,12 @@ async function sendVerifyEmail(req, res, next){
         if(req.headers.authorization){
             CustomError.createError({
                 name:"Error enviando mail de registro",
-                cause: "Ya hay una sesión activa",
+                cause: "Ya hay una sesión activa, por favor deslogueese",
                 code: errorTypes.AUTHORIZATION_ERROR
             })
         }
         
-        if ( !name || !last_name || !email || !role || !password || !repeatedPassword){
+        if ( !name || !last_name || !email || !password || !repeatedPassword){
             CustomError.createError({
                 name: "Error enviando mail de registro",
                 cause: "Alguno de los campos está incompleto",
@@ -60,7 +59,7 @@ async function sendVerifyEmail(req, res, next){
             name,
             last_name,
             email,
-            role,
+            role: 'USER',
             password,
             token:{
                 first_data: email,
@@ -152,9 +151,10 @@ async function generateLogin(req, res, next){
                 code: errorTypes.AUTHORIZATION_ERROR
             })
         }
+        console.log(req.user)
         let token = generateJWT(req.user)
 
-        return res.status(200).json({payload:`Logueado correctamente`, generateTokenCookie: token})
+        return res.status(200).json({payload:`Logueado correctamente`, generateTokenCookie: token, userRole:req.user.role})
     }catch(error){
         next(error)
     }
