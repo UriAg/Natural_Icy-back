@@ -102,8 +102,6 @@ export const initPassport = async ()=>{
                     role: userExists.role,
                     email:userExists.email,
                     _id: userExists._id,
-                    cart: userExists.cart,
-                    favorites: userExists.favorites
                 }
 
                 return done(null, userResponse)
