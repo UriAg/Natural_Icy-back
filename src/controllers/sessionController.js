@@ -151,7 +151,6 @@ async function generateLogin(req, res, next){
                 code: errorTypes.AUTHORIZATION_ERROR
             })
         }
-        console.log(req.user)
         let token = generateJWT(req.user)
 
         return res.status(200).json({payload:`Logueado correctamente`, generateUserTokenAccess: token, userRole:req.user.role})
