@@ -34,6 +34,7 @@ async function getCartProductsFromBD(req, res, next) {
               labels: product.labels,
               category: product.category,
               thumbnail: product.thumbnail,
+              stock:product.stock,
               price: product.price,
               code: product.code,
               quantity: sanitizedProduct.quantity,
