@@ -11,6 +11,22 @@ import path from "path";
 import { promises as fsPromises } from "fs";
 import { __dirname } from "../utils.js";
 
+async function getProducts(req, res, next) {
+  try {
+    res.setHeader("Content-Type", "application/json");
+    const products = await productsService.getProducts();
+
+    if (!products)
+      return res
+        .status(200)
+        .json({ payload: "No se encontraron productos", products });
+
+    return res.status(200).json({ products });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function getProductsWithStockFromBD(req, res, next) {
   try {
     res.setHeader("Content-Type", "application/json");
@@ -515,6 +531,7 @@ function notFound(req, res) {
 }
 
 export default {
+  getProducts,
   getProductsWithStockFromBD,
   getProductsWithoutStockFromBD,
   getFavoritesProductsFromBD,
