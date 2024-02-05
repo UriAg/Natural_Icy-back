@@ -223,15 +223,15 @@ async function editProductFromDB(req, res, next) {
   try {
     res.setHeader("Content-Type", "multipart/form-data");
     const productId = req.params.productId;
-    const productParam = req.query.productParam.toLowerCase();
+    // const productParam = req.query.productParam.toLowerCase();
 
-    if (!productParam) {
-        CustomError.createError({
-          name: "Error de parametros",
-          cause: "No se proporcionó el query 'productParam'",
-          code: errorTypes.INVALID_ARGS_ERROR,
-        });
-      }
+    // if (!productParam) {
+    //   CustomError.createError({
+    //     name: "Error de parametros",
+    //     cause: "No se proporcionó el query 'productParam'",
+    //     code: errorTypes.INVALID_ARGS_ERROR,
+    //   });
+    // }
 
     if (!isValidObjectId(productId)) {
       CustomError.createError({
@@ -251,62 +251,9 @@ async function editProductFromDB(req, res, next) {
       });
     }
 
-    const { newParamValue } = req.body;
+    const { newSetOfValues } = req.body;
 
-    switch (productParam) {
-      case "title":
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { title: newParamValue } }
-        );
-        break;
-
-      case "description":
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { description: newParamValue } }
-        );
-        break;
-
-      case "labels":
-        const labelsArray = newParamValue.split(",");
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { labels: labelsArray } }
-        );
-        break;
-
-      case "price":
-        const convertedPrice = parseFloat(newParamValue);
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { price: convertedPrice } }
-        );
-        break;
-
-      case "stock":
-        const convertedStock = parseInt(newParamValue, 10);
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { stock: convertedStock } }
-        );
-        break;
-
-      case "category":
-        await productsService.updateOne(
-          { _id: productId },
-          { $set: { category: newParamValue } }
-        );
-        break;
-
-      default:
-        CustomError.createError({
-          name: "Error editando producto",
-          cause: "El parametro proporcionado no coincide con los existentes",
-          code: errorTypes.NOT_FOUND_ERROR,
-        });
-        break;
-    }
+    await productsService.updateOne({ _id: productId }, newSetOfValues);
 
     return res
       .status(201)
