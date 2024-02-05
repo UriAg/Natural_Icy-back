@@ -254,11 +254,10 @@ async function editProductFromDB(req, res, next) {
           { $pull: { thumbnail: img } }
         );
       } catch (error) {
-        CustomError.createError({
-          name: "Error al eliminar imagen del producto",
-          cause: "Error en el procesamiento de fileSystem: multer",
-          code: errorTypes.SERVER_SIDE_ERROR,
-        });
+        await productsService.updateOne(
+          { _id: productId },
+          { $pull: { thumbnail: [] } }
+        );
       }
     });
 
