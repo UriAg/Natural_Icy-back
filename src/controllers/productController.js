@@ -267,11 +267,11 @@ async function editProductFromDB(req, res, next) {
           });
           
           console.log('g')
-          const imageUrls = [];
+          
           
           console.log('h')
           
-          newSetOfValues['thumbnail'] = imageUrls
+          newSetOfValues['thumbnail'] = thumbnail
           console.log(newSetOfValues.thumbnail)
           console.log('i')
           
@@ -298,7 +298,7 @@ async function editProductFromDB(req, res, next) {
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
-          imageUrl.filename
+          imageUrl
         );
         try {
           await fsPromises.unlink(imagePath);
