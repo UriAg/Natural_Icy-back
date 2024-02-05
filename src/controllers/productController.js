@@ -222,7 +222,7 @@ async function uploadProductToDB(req, res, next) {
 async function editProductFromDB(req, res, next) {
   res.setHeader("Content-Type", "multipart/form-data");
   const { newSetOfValues, thumbnail } = req.body;
-
+  console.log(req.body)
   try {
     const productId = req.params.productId;
 
@@ -271,7 +271,7 @@ async function editProductFromDB(req, res, next) {
           
           console.log('h')
           
-          newSetOfValues['thumbnail'] = thumbnail
+          // newSetOfValues['thumbnail'] = thumbnail
           console.log(req.files)
           console.log('i')
           
