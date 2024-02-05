@@ -52,7 +52,7 @@ Tener en cuenta: Los "code" no se pueden repetir, sino no se sube el producto.
 "labels" y "thumbnail" deben ser arrays. Imagenes menores a 5MB
 
 [title, description, code, price, thumbnail, stock, category] = Propiedades que se pueden editar
--Editar producto: `https://natural-icy-market-api.onrender.com/api/products/${IdProducto}?productParam=${ParametroAModificar}`,
+-Editar producto: `https://natural-icy-market-api.onrender.com/api/products/${IdProducto}`,
 Metodo: 'PUT',
 Campos a proveer en fetch: { newParamValue },
 Tener en cuenta: TODA la información se modifica menos el "code",

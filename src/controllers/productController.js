@@ -224,7 +224,7 @@ async function editProductFromDB(req, res, next) {
     res.setHeader("Content-Type", "multipart/form-data");
     const productId = req.params.productId;
     // const productParam = req.query.productParam.toLowerCase();
-
+    console.log('a')
     // if (!productParam) {
     //   CustomError.createError({
     //     name: "Error de parametros",
@@ -240,8 +240,10 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.INVALID_ARGS_ERROR,
       });
     }
+    console.log('b')
 
     const productToUpdate = await productsService.getProductById(productId);
+    console.log('c')
 
     if (!productToUpdate) {
       CustomError.createError({
@@ -250,8 +252,13 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
+    console.log('d')
 
     const { newSetOfValues } = req.body;
+    console.log(req.body)
+    console.log("##########################################")
+    console.log(newSetOfValues)
+
 
     await productsService.updateOne({ _id: productId }, newSetOfValues);
 
