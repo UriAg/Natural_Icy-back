@@ -223,15 +223,6 @@ async function editProductFromDB(req, res, next) {
   try {
     res.setHeader("Content-Type", "multipart/form-data");
     const productId = req.params.productId;
-    // const productParam = req.query.productParam.toLowerCase();
-    console.log('a')
-    // if (!productParam) {
-    //   CustomError.createError({
-    //     name: "Error de parametros",
-    //     cause: "No se proporcionó el query 'productParam'",
-    //     code: errorTypes.INVALID_ARGS_ERROR,
-    //   });
-    // }
 
     if (!isValidObjectId(productId)) {
       CustomError.createError({
@@ -240,10 +231,8 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.INVALID_ARGS_ERROR,
       });
     }
-    console.log('b')
 
     const productToUpdate = await productsService.getProductById(productId);
-    console.log('c')
 
     if (!productToUpdate) {
       CustomError.createError({
@@ -252,21 +241,22 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-    console.log('d')
 
     const { newSetOfValues } = req.body;
-    console.log(req.body)
-    console.log("##########################################")
-    console.log(newSetOfValues)
 
-
+    
     await productsService.updateOne({ _id: productId }, newSetOfValues);
+    const updatedProuct = await productsService.getProductById(productId);
+
+    if(!newSetOfValues.thumbnail || newSetOfValues.thumbnail === "" || newSetOfValues.thumbnail === false){
+      await productsService.updateOne({ _id: productId }, {$set: {thumbnail: productToUpdate.thumbnail}});
+    }
 
     return res
       .status(201)
       .json({
         message: "Se modificó el producto satisfactoriamente",
-        product: productToUpdate,
+        product: updatedProuct,
       });
   } catch (error) {
     next(error);
