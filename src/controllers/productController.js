@@ -243,8 +243,27 @@ async function editProductFromDB(req, res, next) {
     }
 
     const { newSetOfValues } = req.body;
-
     
+    productToUpdate.thumbnail.map(async (img) => {
+      try {
+        await fsPromises.unlink(
+          path.join(__dirname, "/public/images/products/", img)
+        );
+        await productsService.updateOne(
+          { _id: productId },
+          { $pull: { thumbnail: img } }
+        );
+      } catch (error) {
+        CustomError.createError({
+          name: "Error al eliminar imagen del producto",
+          cause: "Error en el procesamiento de fileSystem: multer",
+          code: errorTypes.SERVER_SIDE_ERROR,
+        });
+      }
+    });
+
+    newSetOfValues['thumbnail'] = req.files
+
     await productsService.updateOne({ _id: productId }, newSetOfValues);
     const updatedProuct = await productsService.getProductById(productId);
 
@@ -257,61 +276,6 @@ async function editProductFromDB(req, res, next) {
       .json({
         message: "Se modificó el producto satisfactoriamente",
         product: updatedProuct,
-      });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function addProductImagesFromDB(req, res, next) {
-  try {
-    res.setHeader("Content-Type", "multipart/form-data");
-    const productId = req.params.productId;
-
-    if (!isValidObjectId(productId)) {
-      CustomError.createError({
-        name: "Error buscando producto",
-        cause: invalidIdProductError(productId),
-        code: errorTypes.INVALID_ARGS_ERROR,
-      });
-    }
-
-    const productToUpdate = await productsService.getProductById(productId);
-
-    if (!productToUpdate) {
-      CustomError.createError({
-        name: "Error buscando producto",
-        cause: IdNotFoundProductError(productId),
-        code: errorTypes.NOT_FOUND_ERROR,
-      });
-    }
-
-    const MAX_IMG_CAPACITY = 4;
-
-    if(productToUpdate.thumbnail.length + req.files.length > MAX_IMG_CAPACITY){
-        CustomError.createError({
-            name: "Error añadiendo imagenes",
-            cause: `El producto cuenta con ${productToUpdate.thumbnail.length}
-            imagenes, el maximo de imagenes son 5, usted puede agregar 
-            ${MAX_IMG_CAPACITY - productToUpdate.thumbnail.length} imagenes`,
-            code: errorTypes.NOT_FOUND_ERROR,
-        });
-    }
-
-    const imageUrls = [];
-    for (const image of req.files) {
-      imageUrls.push(image.filename.replace(/\//g, ""));
-    }
-    await productsService.updateOne(
-      { _id: productId },
-      { $push: { thumbnail: imageUrls } }
-    );
-
-    return res
-      .status(201)
-      .json({
-        message: "Se agregaron las imagenes satisfactoriamente",
-        uplaodedImages: imageUrls,
       });
   } catch (error) {
     if (req.files.length) {
@@ -332,79 +296,152 @@ async function addProductImagesFromDB(req, res, next) {
         }
       }
     }
-
     next(error);
   }
 }
 
-async function deleteProductImageFromDB(req, res, next) {
-  try {
-    res.setHeader("Content-Type", "multipart/form-data");
-    const productId = req.params.productId;
-    const imageId = req.query.imageId;
+// async function addProductImagesFromDB(req, res, next) {
+//   try {
+//     res.setHeader("Content-Type", "multipart/form-data");
+//     const productId = req.params.productId;
 
-    if (!imageId) {
-      CustomError.createError({
-        name: "Error de parametros",
-        cause: "No se proporcionó el query 'imagenId'",
-        code: errorTypes.INVALID_ARGS_ERROR,
-      });
-    }
+//     if (!isValidObjectId(productId)) {
+//       CustomError.createError({
+//         name: "Error buscando producto",
+//         cause: invalidIdProductError(productId),
+//         code: errorTypes.INVALID_ARGS_ERROR,
+//       });
+//     }
 
-    if (!isValidObjectId(productId)) {
-      CustomError.createError({
-        name: "Error buscando producto",
-        cause: invalidIdProductError(productId),
-        code: errorTypes.INVALID_ARGS_ERROR,
-      });
-    }
+//     const productToUpdate = await productsService.getProductById(productId);
 
-    const productToUpdate = await productsService.getProductById(productId);
+//     if (!productToUpdate) {
+//       CustomError.createError({
+//         name: "Error buscando producto",
+//         cause: IdNotFoundProductError(productId),
+//         code: errorTypes.NOT_FOUND_ERROR,
+//       });
+//     }
 
-    if (!productToUpdate) {
-      CustomError.createError({
-        name: "Error buscando producto",
-        cause: IdNotFoundProductError(productId),
-        code: errorTypes.NOT_FOUND_ERROR,
-      });
-    }
+//     const MAX_IMG_CAPACITY = 4;
 
-    productToUpdate.thumbnail.map(async (img) => {
-      if (img === imageId) {
-        try {
-          await fsPromises.unlink(
-            path.join(__dirname, "/public/images/products/", img)
-          );
-          await productsService.updateOne(
-            { _id: productId },
-            { $pull: { thumbnail: img } }
-          );
-        } catch (error) {
-          CustomError.createError({
-            name: "Error al eliminar imagen del producto",
-            cause: "Error en el procesamiento de fileSystem: multer",
-            code: errorTypes.SERVER_SIDE_ERROR,
-          });
-        }
-      } else {
-        CustomError.createError({
-          name: "Error al eliminar imagen del producto",
-          cause: "La imagen proporcionada no se encuentra en el producto",
-          code: errorTypes.INVALID_ARGS_ERROR,
-        });
-      }
-    });
+//     if(productToUpdate.thumbnail.length + req.files.length > MAX_IMG_CAPACITY){
+//         CustomError.createError({
+//             name: "Error añadiendo imagenes",
+//             cause: `El producto cuenta con ${productToUpdate.thumbnail.length}
+//             imagenes, el maximo de imagenes son 5, usted puede agregar 
+//             ${MAX_IMG_CAPACITY - productToUpdate.thumbnail.length} imagenes`,
+//             code: errorTypes.NOT_FOUND_ERROR,
+//         });
+//     }
 
-    return res
-      .status(201)
-      .json({
-        message: "Se removio la imagen satisfactoriamente",
-        uplaodedImages: imageUrls,
-      });
-  } catch (error) {
-    next(error);
-  }
-}
+//     const imageUrls = [];
+//     for (const image of req.files) {
+//       imageUrls.push(image.filename.replace(/\//g, ""));
+//     }
+//     await productsService.updateOne(
+//       { _id: productId },
+//       { $push: { thumbnail: imageUrls } }
+//     );
+
+//     return res
+//       .status(201)
+//       .json({
+//         message: "Se agregaron las imagenes satisfactoriamente",
+//         uplaodedImages: imageUrls,
+//       });
+//   } catch (error) {
+//     if (req.files.length) {
+//       for (const imageUrl of req.files) {
+//         const imagePath = path.join(
+//           __dirname,
+//           "/public/images/products/",
+//           imageUrl.filename
+//         );
+//         try {
+//           await fsPromises.unlink(imagePath);
+//         } catch (error) {
+//           CustomError.createError({
+//             name: "Error al eliminar imagen de producto",
+//             cause: "Error en el procesamiento de fileSystem: multer",
+//             code: errorTypes.SERVER_SIDE_ERROR,
+//           });
+//         }
+//       }
+//     }
+
+//     next(error);
+//   }
+// }
+
+// async function deleteProductImageFromDB(req, res, next) {
+//   try {
+//     res.setHeader("Content-Type", "multipart/form-data");
+//     const productId = req.params.productId;
+//     const imageId = req.query.imageId;
+
+//     if (!imageId) {
+//       CustomError.createError({
+//         name: "Error de parametros",
+//         cause: "No se proporcionó el query 'imagenId'",
+//         code: errorTypes.INVALID_ARGS_ERROR,
+//       });
+//     }
+
+//     if (!isValidObjectId(productId)) {
+//       CustomError.createError({
+//         name: "Error buscando producto",
+//         cause: invalidIdProductError(productId),
+//         code: errorTypes.INVALID_ARGS_ERROR,
+//       });
+//     }
+
+//     const productToUpdate = await productsService.getProductById(productId);
+
+//     if (!productToUpdate) {
+//       CustomError.createError({
+//         name: "Error buscando producto",
+//         cause: IdNotFoundProductError(productId),
+//         code: errorTypes.NOT_FOUND_ERROR,
+//       });
+//     }
+
+//     productToUpdate.thumbnail.map(async (img) => {
+//       if (img === imageId) {
+//         try {
+//           await fsPromises.unlink(
+//             path.join(__dirname, "/public/images/products/", img)
+//           );
+//           await productsService.updateOne(
+//             { _id: productId },
+//             { $pull: { thumbnail: img } }
+//           );
+//         } catch (error) {
+//           CustomError.createError({
+//             name: "Error al eliminar imagen del producto",
+//             cause: "Error en el procesamiento de fileSystem: multer",
+//             code: errorTypes.SERVER_SIDE_ERROR,
+//           });
+//         }
+//       } else {
+//         CustomError.createError({
+//           name: "Error al eliminar imagen del producto",
+//           cause: "La imagen proporcionada no se encuentra en el producto",
+//           code: errorTypes.INVALID_ARGS_ERROR,
+//         });
+//       }
+//     });
+
+//     return res
+//       .status(201)
+//       .json({
+//         message: "Se removio la imagen satisfactoriamente",
+//         uplaodedImages: imageUrls,
+//       });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 async function deleteProductFromDB(req, res, next) {
   try {
