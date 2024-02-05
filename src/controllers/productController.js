@@ -243,6 +243,11 @@ async function editProductFromDB(req, res, next) {
     }
 
     const { newSetOfValues } = req.body;
+    console.log(req.body)
+    console.log('##############################')
+    console.log(req.file)
+    console.log('##############################')
+    console.log(req.files)
     
     productToUpdate.thumbnail.map(async (img) => {
       try {
