@@ -268,9 +268,7 @@ async function editProductFromDB(req, res, next) {
           
           console.log('g')
           const imageUrls = [];
-          for (const image of thumbnail) {
-            imageUrls.push(image.filename.replace(/\//g, ""));
-          }
+          
           console.log('h')
           
           newSetOfValues['thumbnail'] = imageUrls
