@@ -221,10 +221,9 @@ async function uploadProductToDB(req, res, next) {
 
 async function editProductFromDB(req, res, next) {
   res.setHeader("Content-Type", "multipart/form-data");
-  const { newSetOfValues, thumbnail } = req.body;
+  const { newSetOfValues } = req.body;
   try {
     const productId = req.params.productId;
-    console.log(req.files)
 
     if (!isValidObjectId(productId)) {
       CustomError.createError({
@@ -233,9 +232,8 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.INVALID_ARGS_ERROR,
       });
     }
-    console.log('a')
+
     const productToUpdate = await productsService.getProductById(productId);
-    console.log('b')
     
     if (!productToUpdate) {
       CustomError.createError({
@@ -244,46 +242,35 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-    console.log('c')
     
-    productToUpdate.thumbnail.map(async (img) => {
-      console.log('d')
-      try {
-        await fsPromises.unlink(
+    if(thumbnail || thumbnail.length > 1 || req.files || req.files.length > 1){
+      productToUpdate.thumbnail.map(async (img) => {
+        try {
+          await fsPromises.unlink(
           path.join(__dirname, "/public/images/products/", img)
           );
-          console.log('e')
           await productsService.updateOne(
             { _id: productId },
             { $pull: { thumbnail: img } }
             );
-            console.log('f')
-          } catch (error) {
-            await productsService.updateOne(
-              { _id: productId },
-              { $pull: { thumbnail: [] } }
-              );
-            }
-          });
-          
-          console.log('g')
-          
-          
-          console.log('h')
-          
-          // newSetOfValues['thumbnail'] = thumbnail
-          console.log('i')
-          
-          await productsService.updateOne({ _id: productId }, newSetOfValues);
-          console.log('j')
-          const updatedProuct = await productsService.getProductById(productId);
-          console.log('k')
-          
-          if(!newSetOfValues.thumbnail || newSetOfValues.thumbnail === "" || newSetOfValues.thumbnail === false){
-      console.log('l')
-      await productsService.updateOne({ _id: productId }, {$set: {thumbnail: productToUpdate.thumbnail}});
+        } catch (error) {
+          await productsService.updateOne(
+          { _id: productId },
+          { $pull: { thumbnail: [] } }
+          );
+        }
+      }); 
     }
-    console.log('m')
+
+    const imageUrls = [];
+    for (const image of req.files) {
+      imageUrls.push(image.filename.replace(/\//g, ""));
+    }
+
+    newSetOfValues['thumbnail']=imageUrls;
+
+    await productsService.updateOne({ _id: productId }, newSetOfValues);
+    const updatedProuct = await productsService.getProductById(productId);
 
     return res
       .status(201)
@@ -292,8 +279,8 @@ async function editProductFromDB(req, res, next) {
         product: updatedProuct,
       });
   } catch (error) {
-    if (thumbnail.length) {
-      for (const imageUrl of thumbnail) {
+    if (req.files.length) {
+      for (const imageUrl of req.files) {
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
