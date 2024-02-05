@@ -272,7 +272,7 @@ async function editProductFromDB(req, res, next) {
           console.log('h')
           
           newSetOfValues['thumbnail'] = thumbnail
-          console.log(newSetOfValues.thumbnail)
+          console.log(req.files)
           console.log('i')
           
           await productsService.updateOne({ _id: productId }, newSetOfValues);
