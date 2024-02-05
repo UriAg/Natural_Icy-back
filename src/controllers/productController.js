@@ -261,7 +261,12 @@ async function editProductFromDB(req, res, next) {
       }
     });
 
-    newSetOfValues['thumbnail'] = req.files
+    const imageUrls = [];
+    for (const image of req.files) {
+      imageUrls.push(image.filename.replace(/\//g, ""));
+    }
+
+    newSetOfValues['thumbnail'] = imageUrls
 
     await productsService.updateOne({ _id: productId }, newSetOfValues);
     const updatedProuct = await productsService.getProductById(productId);
