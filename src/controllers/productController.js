@@ -242,7 +242,7 @@ async function editProductFromDB(req, res, next) {
       });
     }
 
-    const { newSetOfValues } = req.body;
+    const { newSetOfValues, thumbnail } = req.body;
 
     productToUpdate.thumbnail.map(async (img) => {
       try {
