@@ -224,7 +224,7 @@ async function editProductFromDB(req, res, next) {
   const { newSetOfValues } = req.body;
   try {
     const productId = req.params.productId;
-
+    console.log('a')
     if (!isValidObjectId(productId)) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -232,8 +232,9 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.INVALID_ARGS_ERROR,
       });
     }
-
+    
     const productToUpdate = await productsService.getProductById(productId);
+    console.log('b')
     
     if (!productToUpdate) {
       CustomError.createError({
@@ -243,34 +244,42 @@ async function editProductFromDB(req, res, next) {
       });
     }
     
+    console.log('c')
     if(thumbnail || thumbnail.length > 1 || req.files || req.files.length > 1){
       productToUpdate.thumbnail.map(async (img) => {
         try {
           await fsPromises.unlink(
-          path.join(__dirname, "/public/images/products/", img)
-          );
-          await productsService.updateOne(
-            { _id: productId },
+            path.join(__dirname, "/public/images/products/", img)
+            );
+            await productsService.updateOne(
+              { _id: productId },
             { $pull: { thumbnail: img } }
             );
         } catch (error) {
           await productsService.updateOne(
-          { _id: productId },
+            { _id: productId },
           { $pull: { thumbnail: [] } }
           );
         }
       }); 
     }
-
+    console.log('d')
+    
     const imageUrls = [];
     for (const image of req.files) {
       imageUrls.push(image.filename.replace(/\//g, ""));
     }
-
+    console.log(imageUrls)
+    
+    console.log('e')
     newSetOfValues['thumbnail']=imageUrls;
-
+    console.log(newSetOfValues.thumbnail)
+    console.log('f')
+    
     await productsService.updateOne({ _id: productId }, newSetOfValues);
+    console.log('g')
     const updatedProuct = await productsService.getProductById(productId);
+    console.log('h')
 
     return res
       .status(201)

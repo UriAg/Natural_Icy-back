@@ -8,12 +8,8 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "/public/images/products/")); // Directorio donde se guardarán las imágenes
   },
   filename: (req, file, cb) => {
-    console.log('aca el file: '+JSON.stringify(file, null, 5))
-    console.log(file.originalname)
     const modifiedName = file.originalname.replace(/\s+/g, '_');
-    console.log(modifiedName)
     const fileName = `/${Date.now()}_${modifiedName}`;
-    console.log(fileName)
     cb(null, fileName);
   },
 });
