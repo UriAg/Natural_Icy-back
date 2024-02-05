@@ -243,12 +243,7 @@ async function editProductFromDB(req, res, next) {
     }
 
     const { newSetOfValues } = req.body;
-    console.log(req.body)
-    console.log('##############################')
-    console.log(req.file)
-    console.log('##############################')
-    console.log(req.files)
-    
+
     productToUpdate.thumbnail.map(async (img) => {
       try {
         await fsPromises.unlink(
@@ -267,7 +262,7 @@ async function editProductFromDB(req, res, next) {
     });
 
     const imageUrls = [];
-    for (const image of req.files) {
+    for (const image of thumbnail) {
       imageUrls.push(image.filename.replace(/\//g, ""));
     }
 
@@ -287,8 +282,8 @@ async function editProductFromDB(req, res, next) {
         product: updatedProuct,
       });
   } catch (error) {
-    if (req.files.length) {
-      for (const imageUrl of req.files) {
+    if (thumbnail.length) {
+      for (const imageUrl of thumbnail) {
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
