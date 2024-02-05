@@ -519,8 +519,8 @@ export default {
   getOneProductFromBD,
   uploadProductToDB,
   editProductFromDB,
-  addProductImagesFromDB,
-  deleteProductImageFromDB,
+  // addProductImagesFromDB,
+  // deleteProductImageFromDB,
   deleteProductFromDB,
   notFound,
 };

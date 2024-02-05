@@ -20,9 +20,9 @@ class CustomProductsRouter extends MyRouter{
 
         this.put('/:productId', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.editProductFromDB)
         
-        this.put('/:productId/images', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.addProductImagesFromDB)
+        // this.put('/:productId/images', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.addProductImagesFromDB)
         
-        this.delete('/:productId/images', ['ADMIN', 'CREATOR'], passportCall('jwt'), productController.deleteProductImageFromDB)
+        // this.delete('/:productId/images', ['ADMIN', 'CREATOR'], passportCall('jwt'), productController.deleteProductImageFromDB)
         
         this.delete('/:productId', ['ADMIN', 'CREATOR'], passportCall('jwt'), productController.deleteProductFromDB)
 
