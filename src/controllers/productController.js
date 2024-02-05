@@ -222,9 +222,9 @@ async function uploadProductToDB(req, res, next) {
 async function editProductFromDB(req, res, next) {
   res.setHeader("Content-Type", "multipart/form-data");
   const { newSetOfValues, thumbnail } = req.body;
-  console.log(JSON.stringify(thumbnail, null, 5))
   try {
     const productId = req.params.productId;
+    console.log(req.files)
 
     if (!isValidObjectId(productId)) {
       CustomError.createError({
@@ -272,7 +272,6 @@ async function editProductFromDB(req, res, next) {
           console.log('h')
           
           // newSetOfValues['thumbnail'] = thumbnail
-          console.log(req.files)
           console.log('i')
           
           await productsService.updateOne({ _id: productId }, newSetOfValues);
