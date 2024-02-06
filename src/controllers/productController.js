@@ -242,7 +242,8 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-    
+
+    const imageUrls = [];
     if( thumbnail || thumbnail.length > 0 || req.files || req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
         try {
@@ -260,13 +261,13 @@ async function editProductFromDB(req, res, next) {
           );
         }
       }); 
+      for (const image of req.files) {
+        imageUrls.push(image.filename.replace(/\//g, ""));
+      }
+    }else{
+      imageUrls = productToUpdate.thumbnail;
     }
-    
-    const imageUrls = [];
-    for (const image of req.files) {
-      imageUrls.push(image.filename.replace(/\//g, ""));
-    }
-    
+
     const newSetOfValues = {
       title,
       description,
