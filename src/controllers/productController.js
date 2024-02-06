@@ -222,7 +222,7 @@ async function uploadProductToDB(req, res, next) {
 async function editProductFromDB(req, res, next) {
   try {
     res.setHeader("Content-Type", "multipart/form-data");
-    const { title, description, price, stock, labels, category, code, thumbnail} = req.body
+    const { title, description, price, stock, labels, category, code} = req.body
     const productId = req.params.productId;
 
     if (!isValidObjectId(productId)) {
@@ -244,7 +244,7 @@ async function editProductFromDB(req, res, next) {
     }
 
     const imageUrls = [];
-    if( thumbnail || thumbnail.length > 0 || req.files || req.files.length > 0){
+    if( req.files || req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
         try {
           await fsPromises.unlink(
