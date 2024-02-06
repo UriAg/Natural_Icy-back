@@ -244,7 +244,9 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-
+    console.log('#################FILES')
+    console.log(req.files)
+    console.log('#################FILES')
     const imageUrls = [];
     if( req.files || req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
