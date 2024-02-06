@@ -270,7 +270,8 @@ async function editProductFromDB(req, res, next) {
       imageUrls.push(image.filename.replace(/\//g, ""));
     }
     console.log(imageUrls)
-    
+    console.log(req.body)
+    console.log(newSetOfValues)
     console.log('e')
     newSetOfValues.thumbnail=imageUrls;
     console.log('afdsa')
