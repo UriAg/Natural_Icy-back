@@ -234,6 +234,7 @@ async function editProductFromDB(req, res, next) {
     }
     
     const productToUpdate = await productsService.getProductById(productId);
+    console.log(productToUpdate)
     const recoveryThumbnails = productToUpdate.thumbnail;
 
     if (!productToUpdate) {
