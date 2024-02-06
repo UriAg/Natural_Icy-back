@@ -296,7 +296,7 @@ async function editProductFromDB(req, res, next) {
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
-          imageUrl
+          imageUrl.filename.replace(/\//g, "")
         );
         try {
           await fsPromises.unlink(imagePath);
