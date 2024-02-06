@@ -266,9 +266,11 @@ async function editProductFromDB(req, res, next) {
         imageUrls.push(image.filename.replace(/\//g, ""));
       }
     }else{
+      console.log(recoveryThumbnails)
       imageUrls = recoveryThumbnails;
     }
-
+    console.log('#################################')
+    console.log(imageUrls)
     const newSetOfValues = {
       title,
       description,
