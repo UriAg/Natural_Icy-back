@@ -222,9 +222,9 @@ async function uploadProductToDB(req, res, next) {
 async function editProductFromDB(req, res, next) {
   try {
     res.setHeader("Content-Type", "multipart/form-data");
-    const { title, description, price, stock, labels, category, code} = req.body
+    const { title, description, price, stock, labels, category, code, thumbnail} = req.body
     const productId = req.params.productId;
-    console.log('a')
+
     if (!isValidObjectId(productId)) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -234,7 +234,6 @@ async function editProductFromDB(req, res, next) {
     }
     
     const productToUpdate = await productsService.getProductById(productId);
-    console.log('b')
     
     if (!productToUpdate) {
       CustomError.createError({
@@ -244,8 +243,7 @@ async function editProductFromDB(req, res, next) {
       });
     }
     
-    console.log('c')
-    if(req.files || req.files.length > 1){
+    if( thumbnail || thumbnail.length > 0 || req.files || req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
         try {
           await fsPromises.unlink(
@@ -263,7 +261,6 @@ async function editProductFromDB(req, res, next) {
         }
       }); 
     }
-    console.log('d')
     
     const imageUrls = [];
     for (const image of req.files) {
@@ -282,9 +279,7 @@ async function editProductFromDB(req, res, next) {
     }
 
     await productsService.updateOne({ _id: productId }, newSetOfValues);
-    console.log('g')
     const updatedProuct = await productsService.getProductById(productId);
-    console.log('h')
 
     return res
       .status(201)
