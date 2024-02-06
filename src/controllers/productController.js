@@ -292,6 +292,7 @@ async function editProductFromDB(req, res, next) {
   } catch (error) {
     if (req.files.length) {
       for (const imageUrl of req.files) {
+        console.log(imageUrl)
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
