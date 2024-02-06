@@ -270,7 +270,7 @@ async function editProductFromDB(req, res, next) {
       }
     }else{
       console.log(recoveryThumbnails)
-      imageUrls = recoveryThumbnails;
+      imageUrls = [...recoveryThumbnails];
     }
     console.log('#################################')
     console.log(imageUrls)
