@@ -221,9 +221,9 @@ async function uploadProductToDB(req, res, next) {
 
 async function editProductFromDB(req, res, next) {
   res.setHeader("Content-Type", "multipart/form-data");
-  const { newSetOfValues } = JSON.parse(req.body.newSetOfValues);
   const { title, description, price, stock, labels, category, code} = req.body
   console.log(typeof labels, labels)
+  res.json({ok:true})
   // try {
   //   const productId = req.params.productId;
   //   console.log('a')
