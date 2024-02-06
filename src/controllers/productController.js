@@ -234,7 +234,8 @@ async function editProductFromDB(req, res, next) {
     }
     
     const productToUpdate = await productsService.getProductById(productId);
-    
+    const recoveryThumbnails = productToUpdate.thumbnail;
+
     if (!productToUpdate) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -265,7 +266,7 @@ async function editProductFromDB(req, res, next) {
         imageUrls.push(image.filename.replace(/\//g, ""));
       }
     }else{
-      imageUrls = productToUpdate.thumbnail;
+      imageUrls = recoveryThumbnails;
     }
 
     const newSetOfValues = {
