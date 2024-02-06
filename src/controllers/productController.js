@@ -273,6 +273,7 @@ async function editProductFromDB(req, res, next) {
     
     console.log('e')
     newSetOfValues.thumbnail=imageUrls;
+    console.log('afdsa')
     console.log(newSetOfValues.thumbnail)
     console.log('f')
     
