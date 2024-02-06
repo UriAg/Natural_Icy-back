@@ -220,105 +220,99 @@ async function uploadProductToDB(req, res, next) {
 }
 
 async function editProductFromDB(req, res, next) {
-  res.setHeader("Content-Type", "multipart/form-data");
-  const { title, description, price, stock, labels, category, code} = req.body
-  console.log(typeof labels, labels)
-  res.json({ok:true})
-  // try {
-  //   const productId = req.params.productId;
-  //   console.log('a')
-  //   if (!isValidObjectId(productId)) {
-  //     CustomError.createError({
-  //       name: "Error buscando producto",
-  //       cause: invalidIdProductError(productId),
-  //       code: errorTypes.INVALID_ARGS_ERROR,
-  //     });
-  //   }
+  try {
+    res.setHeader("Content-Type", "multipart/form-data");
+    const { title, description, price, stock, labels, category, code} = req.body
+    const productId = req.params.productId;
+    console.log('a')
+    if (!isValidObjectId(productId)) {
+      CustomError.createError({
+        name: "Error buscando producto",
+        cause: invalidIdProductError(productId),
+        code: errorTypes.INVALID_ARGS_ERROR,
+      });
+    }
     
-  //   const productToUpdate = await productsService.getProductById(productId);
-  //   console.log('b')
+    const productToUpdate = await productsService.getProductById(productId);
+    console.log('b')
     
-  //   if (!productToUpdate) {
-  //     CustomError.createError({
-  //       name: "Error buscando producto",
-  //       cause: IdNotFoundProductError(productId),
-  //       code: errorTypes.NOT_FOUND_ERROR,
-  //     });
-  //   }
+    if (!productToUpdate) {
+      CustomError.createError({
+        name: "Error buscando producto",
+        cause: IdNotFoundProductError(productId),
+        code: errorTypes.NOT_FOUND_ERROR,
+      });
+    }
     
-  //   console.log('c')
-  //   if(req.files || req.files.length > 1){
-  //     productToUpdate.thumbnail.map(async (img) => {
-  //       try {
-  //         await fsPromises.unlink(
-  //           path.join(__dirname, "/public/images/products/", img)
-  //           );
-  //           await productsService.updateOne(
-  //             { _id: productId },
-  //           { $pull: { thumbnail: img } }
-  //           );
-  //       } catch (error) {
-  //         await productsService.updateOne(
-  //           { _id: productId },
-  //         { $pull: { thumbnail: [] } }
-  //         );
-  //       }
-  //     }); 
-  //   }
-  //   console.log('d')
+    console.log('c')
+    if(req.files || req.files.length > 1){
+      productToUpdate.thumbnail.map(async (img) => {
+        try {
+          await fsPromises.unlink(
+            path.join(__dirname, "/public/images/products/", img)
+            );
+            await productsService.updateOne(
+              { _id: productId },
+            { $pull: { thumbnail: img } }
+            );
+        } catch (error) {
+          await productsService.updateOne(
+            { _id: productId },
+          { $pull: { thumbnail: [] } }
+          );
+        }
+      }); 
+    }
+    console.log('d')
     
-  //   const imageUrls = [];
-  //   for (const image of req.files) {
-  //     imageUrls.push(image.filename.replace(/\//g, ""));
-  //   }
-  //   console.log(imageUrls)
-  //   console.log(req.body)
-  //   console.log(newSetOfValues)
-  //   console.log('e')
-  //   try {
-  //     newSetOfValues['thumbnail']=imageUrls;
-  //     console.log('afdsa')
-  //     console.log(newSetOfValues.thumbnail)
-  //     console.log('f')
-  //   } catch (error) {
-  //     console.log('que paso: '+error)
-  //   }
+    const imageUrls = [];
+    for (const image of req.files) {
+      imageUrls.push(image.filename.replace(/\//g, ""));
+    }
     
+    const newSetOfValues = {
+      title,
+      description,
+      stock: parseInt(stock, 10),
+      price: parseFloat(price),
+      category,
+      code,
+      labels: labels.split(','),
+      thumbnail: imageUrls
+    }
 
+    await productsService.updateOne({ _id: productId }, newSetOfValues);
+    console.log('g')
+    const updatedProuct = await productsService.getProductById(productId);
+    console.log('h')
 
-  //   await productsService.updateOne({ _id: productId }, newSetOfValues);
-  //   console.log('g')
-  //   const updatedProuct = await productsService.getProductById(productId);
-  //   console.log('h')
-
-  //   return res
-  //     .status(201)
-  //     .json({
-  //       message: "Se modificó el producto satisfactoriamente",
-  //       product: updatedProuct,
-  //     });
-  // } catch (error) {
-  //   if (req.files.length) {
-  //     for (const imageUrl of req.files) {
-  //       console.log(imageUrl)
-  //       const imagePath = path.join(
-  //         __dirname,
-  //         "/public/images/products/",
-  //         imageUrl.filename.replace(/\//g, "")
-  //       );
-  //       try {
-  //         await fsPromises.unlink(imagePath);
-  //       } catch (error) {
-  //         CustomError.createError({
-  //           name: "Error al eliminar imagen de producto",
-  //           cause: "Error en el procesamiento de fileSystem: multer",
-  //           code: errorTypes.SERVER_SIDE_ERROR,
-  //         });
-  //       }
-  //     }
-  //   }
-  //   next(error);
-  // }
+    return res
+      .status(201)
+      .json({
+        message: "Se modificó el producto satisfactoriamente",
+        product: updatedProuct,
+      });
+  } catch (error) {
+    if (req.files.length) {
+      for (const imageUrl of req.files) {
+        const imagePath = path.join(
+          __dirname,
+          "/public/images/products/",
+          imageUrl.filename.replace(/\//g, "")
+        );
+        try {
+          await fsPromises.unlink(imagePath);
+        } catch (error) {
+          CustomError.createError({
+            name: "Error al eliminar imagen de producto",
+            cause: "Error en el procesamiento de fileSystem: multer",
+            code: errorTypes.SERVER_SIDE_ERROR,
+          });
+        }
+      }
+    }
+    next(error);
+  }
 }
 
 // async function addProductImagesFromDB(req, res, next) {
