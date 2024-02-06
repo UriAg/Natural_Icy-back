@@ -248,7 +248,7 @@ async function editProductFromDB(req, res, next) {
     console.log(req.files)
     console.log('#################FILES')
     const imageUrls = [];
-    if( req.files || req.files.length > 0){
+    if( req.files && req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
         try {
           await fsPromises.unlink(
