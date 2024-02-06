@@ -273,10 +273,14 @@ async function editProductFromDB(req, res, next) {
     console.log(req.body)
     console.log(newSetOfValues)
     console.log('e')
-    newSetOfValues['thumbnail']=imageUrls;
-    console.log('afdsa')
-    console.log(newSetOfValues.thumbnail)
-    console.log('f')
+    try {
+      newSetOfValues['thumbnail']=imageUrls;
+      console.log('afdsa')
+      console.log(newSetOfValues.thumbnail)
+      console.log('f')
+    } catch (error) {
+      console.log('que paso: '+error)
+    }
     
     await productsService.updateOne({ _id: productId }, newSetOfValues);
     console.log('g')
