@@ -173,22 +173,15 @@ try {
     //         code: errorTypes.AUTHENTICATION_ERROR,
     //     });
     // }
-    console.log('a')
-    console.log(paymentData)
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
         
-        console.log('b')
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
-        console.log(typeof ticketResponse.shipment)
-        console.log('c')
         await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
         {$set: {isPaid: true}})
-        console.log('d')
         let clientPhoneReplaced;
         if(ticketResponse.payer.phone){
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
-        console.log('e')
 
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
@@ -206,7 +199,7 @@ try {
                             <li style="margin-bottom: 10px;"><b>Nombre: </b>${ticketResponse.payer.name} ${ticketResponse.payer.last_name}</li>
                             <li style="margin-bottom: 10px;"><b>Email: </b>${ticketResponse.payer.email}</li>
                             
-                            ${ticketResponse.shipment !== 'false' ? `
+                            ${ticketResponse.shipment !== false ? `
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
@@ -259,7 +252,7 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                        ${ticketResponse.shipment !== 'false' ? 
+                        ${ticketResponse.shipment !== false ? 
                             `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
                         :
                         ''}
@@ -270,7 +263,6 @@ try {
         
             `
         }).catch(err=>console.log(err));
-        console.log('f')
         await transporter.sendMail({
             to: ticketResponse.payer.email,
             subject: 'Orden de compra',
@@ -289,7 +281,7 @@ try {
                         </ul>
                         <h2 style="color: #555;">Detalles de la compra</h2>
                         <ul style="list-style: none; padding: 0;">
-                            ${ticketResponse.shipment !== 'false' ? `
+                            ${ticketResponse.shipment !== false ? `
 
                                 <li style="margin-bottom: 10px;"><b>Opción de retiro: </b>Envío a domicilio</li>
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
@@ -339,7 +331,7 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                        ${ticketResponse.shipment !== 'false' ? 
+                        ${ticketResponse.shipment !== false ? 
                             `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
                         :
                         ''}
@@ -350,7 +342,6 @@ try {
         
             `
         }).catch(err=>console.log(err));
-        console.log('g')
 
         ticketResponse.products.map(async product=>{
             await productsService.updateOne(
@@ -365,7 +356,6 @@ try {
                 )
             }
         })
-        console.log('h')
 
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
