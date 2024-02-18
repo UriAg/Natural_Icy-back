@@ -179,7 +179,7 @@ try {
         
         console.log('b')
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
-        
+        console.log(ticketResponse)
         console.log('c')
         await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
         {$set: {isPaid: true}})
