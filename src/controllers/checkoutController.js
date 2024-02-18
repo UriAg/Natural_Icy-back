@@ -241,7 +241,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.payer.address.aditional_info !== 'false' ? `
+                    ${ticketResponse.shipment !== false && ticketResponse.payer.address.aditional_info !== 'false' ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
@@ -320,7 +320,7 @@ try {
                         `).join('')}
                     </div>
             
-                    ${ticketResponse.payer.address.aditional_info !== 'false' ? `
+                    ${ticketResponse.shipment !== false && ticketResponse.payer.address.aditional_info !== 'false' ? `
                         <div style="margin-top: 20px;">
                             <h2 style="color: #555;">Información adicional de envío</h2>
                             <p>${ticketResponse.payer.address.aditional_info}</p>
