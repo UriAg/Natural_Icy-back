@@ -201,7 +201,7 @@ try {
                             <li style="margin-bottom: 10px;"><b>Nombre: </b>${ticketResponse.payer.name} ${ticketResponse.payer.last_name}</li>
                             <li style="margin-bottom: 10px;"><b>Email: </b>${ticketResponse.payer.email}</li>
                             
-                            ${ticketResponse.shipment ? `
+                            ${ticketResponse.shipment !== 'false' ? `
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
                                 <li style="margin-bottom: 10px;"><b>Número de domicilio: </b>${ticketResponse.payer.address.street_number}</li>
                                 <li style="margin-bottom: 10px;"><b>Envío: </b>Si</li>
@@ -254,7 +254,7 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                        ${ticketResponse.shipment ? 
+                        ${ticketResponse.shipment !== 'false' ? 
                             `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
                         :
                         ''}
@@ -283,7 +283,7 @@ try {
                         </ul>
                         <h2 style="color: #555;">Detalles de la compra</h2>
                         <ul style="list-style: none; padding: 0;">
-                            ${ticketResponse.shipment ? `
+                            ${ticketResponse.shipment !== 'false' ? `
 
                                 <li style="margin-bottom: 10px;"><b>Opción de retiro: </b>Envío a domicilio</li>
                                 <li style="margin-bottom: 10px;"><b>Nombre de calle: </b>${ticketResponse.payer.address.street_name}</li>
@@ -333,7 +333,7 @@ try {
             
                     <div style="text-align:center; margin-top: 20px;">
                         <p style="font-size: 1.5em"><b>Precio final: </b>$${ticketResponse.total_amount}</p>
-                        ${ticketResponse.shipment ? 
+                        ${ticketResponse.shipment !== 'false' ? 
                             `<span style="display: inline-block; color: #333; text-align: center; width: 100%;">(El precio final no incluye envío)</span>`
                         :
                         ''}
