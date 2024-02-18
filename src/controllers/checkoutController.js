@@ -173,17 +173,22 @@ try {
     //         code: errorTypes.AUTHENTICATION_ERROR,
     //     });
     // }
-
+    console.log('a')
+    console.log(paymentData)
     if (paymentData && paymentData.action === 'payment.created' && orderState && orderState.data.status === 'approved') {
         
+        console.log('b')
         const ticketResponse = await ticketService.getTicket({code: orderState.data.external_reference.toString()});
         
+        console.log('c')
         await ticketService.updateTicket({code: orderState.data.external_reference.toString()},
         {$set: {isPaid: true}})
+        console.log('d')
         let clientPhoneReplaced;
         if(ticketResponse.payer.phone){
             clientPhoneReplaced = `${ticketResponse.payer.phone.area_code.toString()}${ticketResponse.payer.phone.number.toString().replace(/\s/g, '')}`
         }
+        console.log('e')
 
         await transporter.sendMail({
             to: config.MAIL_ADMIN,
@@ -265,6 +270,7 @@ try {
         
             `
         }).catch(err=>console.log(err));
+        console.log('f')
         await transporter.sendMail({
             to: ticketResponse.payer.email,
             subject: 'Orden de compra',
@@ -344,6 +350,8 @@ try {
         
             `
         }).catch(err=>console.log(err));
+        console.log('g')
+
         ticketResponse.products.map(async product=>{
             await productsService.updateOne(
                 {_id:product.id},
@@ -357,6 +365,8 @@ try {
                 )
             }
         })
+        console.log('h')
+
         return res.status(200).json({payload: 'Se envió el ticket satisfactoriamente'})
     }
     
