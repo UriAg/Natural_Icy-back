@@ -16,9 +16,9 @@ class CustomProductsRouter extends MyRouter{
 
         this.post('/selected', ['PUBLIC'], productController.getFavoritesProductsFromBD)
 
-        this.post('/', ['ADMIN', 'CREATOR'], passportCall('jwt'), (req, res, next)=>{console.log('empieza')}, uploadImage.array('thumbnail', 5), (req, res, next)=>{console.log('TERMINa')}, productController.uploadProductToDB)
+        this.post('/', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.uploadProductToDB)
 
-        this.put('/:productId', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.editProductFromDB)
+        this.put('/:productId', ['ADMIN', 'CREATOR'], passportCall('jwt'), (req, res, next)=>{console.log('empieza')},uploadImage.array('thumbnail', 5), (req, res, next)=>{console.log('TERMINa')} , productController.editProductFromDB)
         
         // this.put('/:productId/images', ['ADMIN', 'CREATOR'], passportCall('jwt'), uploadImage.array('thumbnail', 5), productController.addProductImagesFromDB)
         
