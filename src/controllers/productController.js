@@ -221,9 +221,11 @@ async function uploadProductToDB(req, res, next) {
 
 async function editProductFromDB(req, res, next) {
   try {
+    console.log('a')
     res.setHeader("Content-Type", "multipart/form-data");
     const { title, description, price, stock, labels, category, code} = req.body
     const productId = req.params.productId;
+    console.log('b')
     if (!isValidObjectId(productId)) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -231,10 +233,13 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.INVALID_ARGS_ERROR,
       });
     }
+    console.log('c')
     
     const productToUpdate = await productsService.getProductById(productId);
+    console.log('d')
     const recoveryThumbnails = productToUpdate.thumbnail;
-
+    console.log('e')
+    
     if (!productToUpdate) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -242,46 +247,56 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-
+    console.log('f')
+    
     let imageUrls = [];
     if( req.files && req.files.length > 0){
+      console.log('dentro a')
       try {
         productToUpdate.thuumbnail.length > 0 && productToUpdate.thumbnail.map(async (img) => {
+          console.log('dentro b')
           await fsPromises.unlink(
             path.join(__dirname, "/public/images/products/", img)
-          );
+            );
+            console.log('dentro c')
           await productsService.updateOne(
             { _id: productId },
-          { $pull: { thumbnail: img } }
-          );
-        }); 
-      } catch (error) {
+            { $pull: { thumbnail: img } }
+            );
+          }); 
+            console.log('dentro d')
+          } catch (error) {
+        console.log('dentro e')
         await productsService.updateOne(
           { _id: productId },
-        { $pull: { thumbnail: [] } }
-        );
+          { $pull: { thumbnail: [] } }
+          );
+          console.log('dentro f')
+        }
+        
+        for (const image of req.files) {
+          imageUrls.push(image.filename.replace(/\//g, ""));
+        }
+      }else{
+        imageUrls = [...recoveryThumbnails];
       }
+      console.log('g')
       
-      for (const image of req.files) {
-        imageUrls.push(image.filename.replace(/\//g, ""));
+      const newSetOfValues = {
+        title,
+        description,
+        stock: parseInt(stock, 10),
+        price: parseFloat(price),
+        category,
+        code,
+        labels: labels.split(','),
+        thumbnail: imageUrls
       }
-    }else{
-      imageUrls = [...recoveryThumbnails];
-    }
-
-    const newSetOfValues = {
-      title,
-      description,
-      stock: parseInt(stock, 10),
-      price: parseFloat(price),
-      category,
-      code,
-      labels: labels.split(','),
-      thumbnail: imageUrls
-    }
-
-    await productsService.updateOne({ _id: productId }, newSetOfValues);
-    const updatedProuct = await productsService.getProductById(productId);
+      console.log('h')
+      
+      await productsService.updateOne({ _id: productId }, newSetOfValues);
+      const updatedProuct = await productsService.getProductById(productId);
+      console.log('i')
 
     return res
       .status(201)
@@ -290,15 +305,21 @@ async function editProductFromDB(req, res, next) {
         product: updatedProuct,
       });
   } catch (error) {
+    console.log('err a')
     if (req.files.length) {
+      console.log('err b')
       for (const imageUrl of req.files) {
+        console.log('err c')
         const imagePath = path.join(
           __dirname,
           "/public/images/products/",
           imageUrl.filename.replace(/\//g, "")
-        );
-        try {
+          );
+          console.log('err d')
+          try {
+          console.log('err e')
           await fsPromises.unlink(imagePath);
+          console.log('err f')
         } catch (error) {
           CustomError.createError({
             name: "Error al eliminar imagen de producto",
