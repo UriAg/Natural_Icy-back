@@ -224,7 +224,6 @@ async function editProductFromDB(req, res, next) {
     res.setHeader("Content-Type", "multipart/form-data");
     const { title, description, price, stock, labels, category, code} = req.body
     const productId = req.params.productId;
-
     if (!isValidObjectId(productId)) {
       CustomError.createError({
         name: "Error buscando producto",
@@ -246,22 +245,23 @@ async function editProductFromDB(req, res, next) {
 
     let imageUrls = [];
     if( req.files && req.files.length > 0){
-      productToUpdate.thumbnail.map(async (img) => {
-        try {
+      try {
+        productToUpdate.thuumbnail.length > 0 && productToUpdate.thumbnail.map(async (img) => {
           await fsPromises.unlink(
             path.join(__dirname, "/public/images/products/", img)
-            );
-            await productsService.updateOne(
-              { _id: productId },
-            { $pull: { thumbnail: img } }
-            );
-        } catch (error) {
+          );
           await productsService.updateOne(
             { _id: productId },
-          { $pull: { thumbnail: [] } }
+          { $pull: { thumbnail: img } }
           );
-        }
-      }); 
+        }); 
+      } catch (error) {
+        await productsService.updateOne(
+          { _id: productId },
+        { $pull: { thumbnail: [] } }
+        );
+      }
+      
       for (const image of req.files) {
         imageUrls.push(image.filename.replace(/\//g, ""));
       }
