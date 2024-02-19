@@ -234,7 +234,6 @@ async function editProductFromDB(req, res, next) {
     }
     
     const productToUpdate = await productsService.getProductById(productId);
-    console.log(productToUpdate)
     const recoveryThumbnails = productToUpdate.thumbnail;
 
     if (!productToUpdate) {
@@ -244,9 +243,7 @@ async function editProductFromDB(req, res, next) {
         code: errorTypes.NOT_FOUND_ERROR,
       });
     }
-    console.log('#################FILES')
-    console.log(req.files)
-    console.log('#################FILES')
+
     let imageUrls = [];
     if( req.files && req.files.length > 0){
       productToUpdate.thumbnail.map(async (img) => {
@@ -269,11 +266,9 @@ async function editProductFromDB(req, res, next) {
         imageUrls.push(image.filename.replace(/\//g, ""));
       }
     }else{
-      console.log(recoveryThumbnails)
       imageUrls = [...recoveryThumbnails];
     }
-    console.log('#################################')
-    console.log(imageUrls)
+
     const newSetOfValues = {
       title,
       description,
