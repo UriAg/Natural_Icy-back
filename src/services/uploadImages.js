@@ -5,7 +5,7 @@ import { __dirname } from '../utils.js';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./public/images/products/"); // Directorio donde se guardarán las imágenes
+    cb(null, path.join(__dirname, "/public/images/products")); // Directorio donde se guardarán las imágenes
   },
   filename: (req, file, cb) => {
     console.log(__dirname)
